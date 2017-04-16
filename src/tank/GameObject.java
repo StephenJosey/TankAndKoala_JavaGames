@@ -1,4 +1,4 @@
-//package TankGame;
+package tank;//package TankGame;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

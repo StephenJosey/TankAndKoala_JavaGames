@@ -1,3 +1,5 @@
+package tank;
+
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -17,7 +19,8 @@ public class Application {
                              });
     frame.setSize(800, 600);
     frame.getContentPane().add(game);
-    game.init();
+    String file = "level.txt";
+    game.init(file);
     frame.setVisible(true);
     game.start();
   }

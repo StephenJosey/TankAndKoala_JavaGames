@@ -1,3 +1,5 @@
+package tank.game;
+
 import java.awt.Image;
 
 /**
@@ -12,4 +14,10 @@ public class Wall extends GameObject {
 
   }
 
+  public boolean collision(GameObject object) {
+    if ( location.intersects( object.getLocation() ) ) {
+      return true;
+    }
+    return false;
+  }
 }
