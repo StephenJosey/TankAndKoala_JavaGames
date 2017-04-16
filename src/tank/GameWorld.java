@@ -15,6 +15,7 @@ import java.util.Observer;
 
 public final class GameWorld extends JPanel implements Observer, Runnable {
   private static final GameWorld game = new GameWorld();
+  private static final GameClock clock = new GameClock(); // -tyler
   private BufferedImage bufferedImage;
   private ArrayList<Wall> walls;
   private ArrayList<Player> players;
@@ -111,6 +112,23 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
     return pane;
   }*/
 
+// by Tyler:
+  public void addClockObserver(Observer theObject){
+    clock.addObserver(theObject);
+  }
+
+  public void removeClockObserver(Observer theObject){
+    clock.deleteObserver(theObject);
+  }
+
+  public int getFrameNumber(){
+    return clock.getFrame();
+  }
+
+  public int getTime(){
+    return clock.getTime();
+  }
+// end by tyler
   public void addWall(Wall wall) {
     walls.add(wall);
   }
