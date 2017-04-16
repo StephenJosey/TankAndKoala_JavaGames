@@ -39,9 +39,6 @@ public class Map implements Observer {
         }
     }
 
-    public void read(Object theObject){
-    }
-
     public void load(){
         GameWorld world = GameWorld.getInstance();
         try {
@@ -61,23 +58,23 @@ public class Map implements Observer {
                     char c = line.charAt(i);
 
                     if(c=='1'){
-                        Wall wall = new Wall(i*16,h*16, world.sprites.get("wall"), false);
+                        Wall wall = new Wall(i ,h , world.sprites.get("wall"), false);
                         world.addWall(wall);
                     }
 
                     if(c=='2'){
-                        Wall wall = new Wall(i*16,h*16, world.sprites.get("wall_destroy"), true);
+                        Wall wall = new Wall(i,h, world.sprites.get("wall_destroy"), true);
                         world.addWall(wall);
                     }
 
                     if(c=='3'){
                         //int[] controls = {KeyEvent.VK_A,KeyEvent.VK_W, KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_SPACE};
-                        world.addPlayer(new Player(i*32, h*32, world.sprites.get("tank")));
+                        world.addPlayer(new Player(i, h, world.sprites.get("tank")));
                     }
 
                     if(c=='4'){
                         //int[] controls = new int[] {KeyEvent.VK_LEFT,KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_ENTER};
-                        world.addPlayer(new Player(i*32, h*32, world.sprites.get("tank")));
+                        world.addPlayer(new Player(i, h, world.sprites.get("tank")));
                     }
 
                 }
@@ -89,6 +86,9 @@ public class Map implements Observer {
             e.printStackTrace();
         }
     }
+
+    public int getWidth() { return w; }
+    public int getHeight() { return h; }
 
     /*Level observes GameClock and updates on every tick*/
     @Override

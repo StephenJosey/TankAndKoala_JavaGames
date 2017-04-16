@@ -16,7 +16,7 @@ public abstract class GameObject {
 
 //  private BufferedImage image;\
   private Image image;
-  private ImageObserver observer;
+  ImageObserver observer;
 
   public GameObject () {
 
@@ -30,6 +30,7 @@ public abstract class GameObject {
     height = image.getHeight( observer );
     width = image.getWidth( observer );
     this.location = new Rectangle(x, y, width, height);
+
   }
 
   public int getX() {
@@ -44,15 +45,28 @@ public abstract class GameObject {
     return this.image.getWidth( observer );
   }
 
+  public void setWidth(int width) {
+    this.width = width;
+  }
+
   public int getHeight() {
     return this.image.getHeight( observer );
+  }
+
+  public void setHeight(int height) {
+    this.height = height;
   }
 
   public Image getImage() { return image; }
 
   public Rectangle getLocation() { return location; }
 
+  public void setLocation(int x, int y) {
+    location.x = x;
+    location.y = y;
+  }
+
   public void repaint( Graphics graphics ) {
-    graphics.drawImage( image, location.x, location.y, observer );
+    graphics.drawImage( image, (location.x * width)/2, (location.y * height)/2, width/2, height/2, observer );
   }
 }

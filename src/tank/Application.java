@@ -17,10 +17,11 @@ public class Application {
                                  game.requestFocusInWindow();
                                }
                              });
-    frame.setSize(800, 600);
+    //frame.setSize(800, 600);
     frame.getContentPane().add(game);
     String file = "level.txt";
     game.init(file);
+    frame.setSize( game.getDimension() );
     frame.setVisible(true);
     game.start();
   }

@@ -1,9 +1,7 @@
 package tank; /**
  * Created by jinghuihuang on 4/15/17.
  */
-import tank.game.Map;
-import tank.game.Player;
-import tank.game.Tank;
+import tank.game.*;
 import tank.game.Wall;
 
 import javax.swing.*;
@@ -20,10 +18,14 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
   private BufferedImage bufferedImage;
   private ArrayList<Wall> walls;
   private ArrayList<Player> players;
+  private Background background;
   private Thread thread;
   private boolean gameOver;
+  private Dimension dimension;
 
-  private Map map;
+  private int mapWidth, mapHeight;
+
+  public Map map;
 
   public HashMap<String, Image> sprites;
 
@@ -32,10 +34,16 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
     walls = new ArrayList<Wall>();
     sprites = new HashMap<String,Image>();
     players = new ArrayList<Player>();
+    dimension = new Dimension(800, 600);
   }
 
   public static GameWorld getInstance() {
     return game;
+  }
+
+  public Dimension getDimension() { return dimension; }
+  public void setDimension(int width, int height) {
+    dimension.setSize(width, height);
   }
 
   public void init(String file) {
@@ -43,9 +51,14 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
     loadSprites();
     map = new Map(file);
     map.load();
+    mapWidth = map.getWidth();
+    mapHeight = map.getHeight();
+    background = new Background(mapWidth*32, mapHeight*32, sprites.get("background"));
+    setDimension(mapWidth*16 + 16, mapHeight*17);
   }
 
   public void loadSprites() {
+    sprites.put("background", getSprite("Resources/Background.png"));
     sprites.put("wall", getSprite("Resources/Blue_wall1.png"));
     sprites.put("wall_destroy", getSprite("Resources/Blue_wall2.png"));
     sprites.put("tank", getSprite("Resources/tank.png"));
@@ -79,6 +92,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
 
   public void paint(Graphics graphic) {
     super.paintComponent(graphic);
+    background.repaint(graphic);
     for (int i = 0; i < walls.size(); i++) {
       walls.get( i ).repaint( graphic );
     }
