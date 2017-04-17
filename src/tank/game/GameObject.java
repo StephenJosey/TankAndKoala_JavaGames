@@ -10,12 +10,12 @@ import java.util.Observer;
 
 public abstract class GameObject {
 
-  private int height;
-  private int width;
+  protected int height;
+  protected int width;
   protected Rectangle location;
 
 //  private BufferedImage image;\
-  private Image image;
+  Image image;
   ImageObserver observer;
 
   public GameObject () {

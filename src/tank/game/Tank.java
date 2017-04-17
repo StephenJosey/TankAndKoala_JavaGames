@@ -9,7 +9,6 @@ public class Tank extends GameObject {
     int health;
     int speed;
     boolean isFiring;
-    boolean moveUp, moveDown, moveLeft, moveRight;
 
     public Tank( int x, int y, Image img ) {
         super(x, y, img);
@@ -31,5 +30,9 @@ public class Tank extends GameObject {
 
     public void setSpeed(int speed) {
         this.speed = speed;
+    }
+
+    public void repaint(Graphics graphics) {
+        graphics.drawImage( image, (location.x * 16), (location.y * 16), width/2, height/2, observer );
     }
 }

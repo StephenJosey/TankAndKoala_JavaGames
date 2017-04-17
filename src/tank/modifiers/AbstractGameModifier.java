@@ -1,4 +1,4 @@
-package tank.modifiers;
+package tank.Modifiers;
 
 import java.util.Observable;
 

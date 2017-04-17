@@ -2,6 +2,7 @@ package tank.game;
 
 import tank.GameWorld;
 
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -68,13 +69,13 @@ public class Map implements Observer {
                     }
 
                     if(c=='3'){
-                        //int[] controls = {KeyEvent.VK_A,KeyEvent.VK_W, KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_SPACE};
-                        world.addPlayer(new Player(i, h, world.sprites.get("tank")));
+                        int[] controls = {KeyEvent.VK_A,KeyEvent.VK_W, KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_SPACE};
+                        world.addPlayer(new Player(i, h, world.sprites.get("tank"), controls));
                     }
 
                     if(c=='4'){
-                        //int[] controls = new int[] {KeyEvent.VK_LEFT,KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_ENTER};
-                        world.addPlayer(new Player(i, h, world.sprites.get("tank")));
+                        int[] controls = new int[] {KeyEvent.VK_LEFT,KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_ENTER};
+                        world.addPlayer(new Player(i, h, world.sprites.get("tank"), controls));
                     }
 
                 }

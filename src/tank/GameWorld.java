@@ -1,6 +1,7 @@
 package tank; /**
  * Created by jinghuihuang on 4/15/17.
  */
+import tank.Modifiers.AbstractGameModifier;
 import tank.game.*;
 import tank.game.Wall;
 
@@ -134,7 +135,10 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
   }
   public void addPlayer(Player player) { players.add(player); }
 
-  public void update( Observable observable, Object object) {
+  @Override
+  public void update(Observable o, Object arg) {
+    AbstractGameModifier modifier = (AbstractGameModifier) o;
+    modifier.read(this);
   }
 
   public boolean isGameOver() { return gameOver; }

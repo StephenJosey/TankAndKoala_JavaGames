@@ -1,10 +1,9 @@
-package tank.modifiers;
+package tank.Modifiers;
 
 import java.util.*;
 
 import tank.GameWorld;
 import tank.game.*;
-import tank.modifiers.AbstractGameModifier;
 
 /**
  * Created by jinghuihuang on 4/16/17.
