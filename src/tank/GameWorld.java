@@ -4,10 +4,14 @@ package tank; /**
 import tank.game.*;
 import tank.game.Wall;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
@@ -30,10 +34,13 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
 
   public HashMap<String, Image> sprites;
 
+  public HashMap<String, SpriteSheet> spriteSheets;
+
   private GameWorld() {
     this.setFocusable(true);
     walls = new ArrayList<Wall>();
     sprites = new HashMap<String,Image>();
+    spriteSheets = new HashMap<>();
     players = new ArrayList<Player>();
     dimension = new Dimension(800, 600);
   }
@@ -58,11 +65,39 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
     setDimension(mapWidth*16 + 16, mapHeight*17 + 16);
   }
 
-  public void loadSprites() {
+  public void loadSprites()  {
+
     sprites.put("background", getSprite("Resources/Background.png"));
     sprites.put("wall", getSprite("Resources/Blue_wall1.png"));
     sprites.put("wall_destroy", getSprite("Resources/Blue_wall2.png"));
     sprites.put("tank", getSprite("Resources/tank.png"));
+
+    spriteSheets.put("tank_blue_base", getSpriteSheet("Resources/Tank_blue_base_strip60.png", 30));
+    spriteSheets.put("tank_blue_basic", getSpriteSheet("Resources/Tank_blue_basic_strip60.png", 30));
+    spriteSheets.put("tank_blue_light", getSpriteSheet("Resources/Tank_blue_light_strip60.png", 30));
+    spriteSheets.put("tank_blue_heavy", getSpriteSheet("Resources/Tank_blue_heavy_strip60.png", 30));
+
+
+    spriteSheets.put("tank_red_base", getSpriteSheet("Resources/Tank_red_base_strip60.png", 30));
+    spriteSheets.put("tank_red_basic", getSpriteSheet("Resources/Tank_red_basic_strip60.png", 30));
+    spriteSheets.put("tank_red_light", getSpriteSheet("Resources/Tank_red_light_strip60.png", 30));
+    spriteSheets.put("tank_red_heavy", getSpriteSheet("Resources/Tank_red_heavy_strip60.png", 30));
+  }
+
+  public SpriteSheet getSpriteSheet(String inPath, int size) {
+    SpriteSheet s = new SpriteSheet(size, inPath);
+    try {
+      File f = new File(GameWorld.class.getResource(inPath).getFile());
+      BufferedImage baseSheet = ImageIO.read(f);
+      for (int col = 0; col < size; col++) {
+        s.sprites[col] = baseSheet.getSubimage(col * 64, 0 * 64, 64, 64);
+      }
+
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
+
+    return s;
   }
 
   public Image getSprite(String name) {
@@ -103,14 +138,14 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
 
   }
 
-  /*public Graphics2D createGraphics2D(int width, int height) {
+  public Graphics2D createGraphics2D(int width, int height) {
     Graphics2D pane = null;
     if (bufferedImage == null)
       bufferedImage = (BufferedImage) createImage(width, height);
     pane = bufferedImage.createGraphics();
     pane.setBackground(getBackground());
     return pane;
-  }*/
+  }
 
 // by Tyler:
   public void addClockObserver(Observer theObject){
