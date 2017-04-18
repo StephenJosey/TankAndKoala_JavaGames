@@ -33,6 +33,6 @@ public class Tank extends GameObject {
     }
 
     public void repaint(Graphics graphics) {
-        graphics.drawImage( image, (location.x * 16), (location.y * 16), width/2, height/2, observer );
+        graphics.drawImage( image, (location.x)/4, (location.y)/4, width/2, height/2, observer );
     }
 }

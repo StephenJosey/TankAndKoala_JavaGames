@@ -15,9 +15,6 @@ public class Wall extends GameObject {
   }
 
   public boolean collision(GameObject object) {
-    if ( location.intersects( object.getLocation() ) ) {
-      return true;
-    }
-    return false;
+    return location.intersects(object.getLocation());
   }
 }

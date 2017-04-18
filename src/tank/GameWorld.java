@@ -56,7 +56,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
     mapWidth = map.getWidth();
     mapHeight = map.getHeight();
     background = new Background(mapWidth*32, mapHeight*32, sprites.get("background"));
-    setDimension(mapWidth*16 + 16, mapHeight*17);
+    setDimension(mapWidth*16 + 16, mapHeight*17 + 16);
   }
 
   public void loadSprites() {

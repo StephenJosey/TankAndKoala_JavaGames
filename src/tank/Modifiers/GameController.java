@@ -18,6 +18,7 @@ public class GameController extends MotionController implements KeyListener{
   int moveState;
   int[] keys;
   boolean player;
+  String direction;
 
   public GameController(Player player){
     this(player, new int[] {KeyEvent.VK_LEFT,KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_SPACE});
@@ -39,13 +40,18 @@ public class GameController extends MotionController implements KeyListener{
   }
 
   private void setMove(String direction) {
-    try{
+    /*try{
       field = Player.class.getDeclaredField(direction);
       moveState=1;
       this.setChanged();
-    } catch (Exception e){e.printStackTrace();}
+    } catch (Exception e){e.printStackTrace();}*/
+    moveState = 1;
+    this.direction = direction;
     notifyObservers();
   }
+
+  public String getMove() { return direction; }
+  public int getMoveState() { return moveState; }
 
   private void setFire(){
     field = null;
@@ -57,11 +63,13 @@ public class GameController extends MotionController implements KeyListener{
   }
 
   private void unsetMove(String direction) {
-    try{
+    /*try{
       field = Player.class.getDeclaredField(direction);
       moveState = 0;
       this.setChanged();
-    } catch (Exception e){e.printStackTrace();}
+    } catch (Exception e){e.printStackTrace();}*/
+    moveState = 0;
+    this.direction = direction;
     notifyObservers();
   }
 

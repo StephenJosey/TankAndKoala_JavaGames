@@ -19,6 +19,7 @@ public class Application {
                              });
     //frame.setSize(800, 600);
     frame.getContentPane().add(game);
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     String file = "level.txt";
     game.init(file);
     frame.setSize( game.getDimension() );
