@@ -40,11 +40,6 @@ public class GameController extends MotionController implements KeyListener{
   }
 
   private void setMove(String direction) {
-    /*try{
-      field = Player.class.getDeclaredField(direction);
-      moveState=1;
-      this.setChanged();
-    } catch (Exception e){e.printStackTrace();}*/
     moveState = 1;
     this.direction = direction;
     notifyObservers();
@@ -63,11 +58,6 @@ public class GameController extends MotionController implements KeyListener{
   }
 
   private void unsetMove(String direction) {
-    /*try{
-      field = Player.class.getDeclaredField(direction);
-      moveState = 0;
-      this.setChanged();
-    } catch (Exception e){e.printStackTrace();}*/
     moveState = 0;
     this.direction = direction;
     notifyObservers();
@@ -80,19 +70,6 @@ public class GameController extends MotionController implements KeyListener{
       this.setChanged();
     } catch(NoSuchMethodException e){e.printStackTrace();}
     notifyObservers();
-  }
-
-  public void read(Object theObject) {
-    Player player = (Player) theObject;
-
-    try{
-      field.setInt(player, moveState);
-    } catch (Exception e) {
-      //e.printStackTrace();
-      try {
-        action.invoke(player);
-      } catch (Exception e2) {}
-    }
   }
 
   public void clearChanged(){

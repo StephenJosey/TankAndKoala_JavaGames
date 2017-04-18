@@ -8,7 +8,7 @@ import tank.game.*;
 /**
  * Created by jinghuihuang on 4/16/17.
  */
-public abstract class MotionController extends AbstractGameModifier implements Observer {
+public abstract class MotionController extends Observable implements Observer {
 
     int fireInterval;
 
