@@ -73,25 +73,29 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
     sprites.put("wall_destroy", getSprite("Resources/Blue_wall2.png"));
     sprites.put("tank", getSprite("Resources/tank.png"));
 
-    spriteSheets.put("tank_blue_base", getSpriteSheet("Resources/Tank_blue_base_strip60.png", 60));
-    spriteSheets.put("tank_blue_basic", getSpriteSheet("Resources/Tank_blue_basic_strip60.png", 30));
-    spriteSheets.put("tank_blue_light", getSpriteSheet("Resources/Tank_blue_light_strip60.png", 30));
-    spriteSheets.put("tank_blue_heavy", getSpriteSheet("Resources/Tank_blue_heavy_strip60.png", 30));
+    spriteSheets.put("tank_blue_base", getSpriteSheet("Resources/Tank_blue_base_strip60.png", 60, 64, 64));
+    spriteSheets.put("tank_blue_basic", getSpriteSheet("Resources/Tank_blue_basic_strip60.png", 60, 64, 64));
+    spriteSheets.put("tank_blue_light", getSpriteSheet("Resources/Tank_blue_light_strip60.png", 60, 64, 64));
+    spriteSheets.put("tank_blue_heavy", getSpriteSheet("Resources/Tank_blue_heavy_strip60.png", 60, 64, 64));
 
 
-    spriteSheets.put("tank_red_base", getSpriteSheet("Resources/Tank_red_base_strip60.png", 60));
-    spriteSheets.put("tank_red_basic", getSpriteSheet("Resources/Tank_red_basic_strip60.png", 30));
-    spriteSheets.put("tank_red_light", getSpriteSheet("Resources/Tank_red_light_strip60.png", 30));
-    spriteSheets.put("tank_red_heavy", getSpriteSheet("Resources/Tank_red_heavy_strip60.png", 30));
+    spriteSheets.put("tank_red_base", getSpriteSheet("Resources/Tank_red_base_strip60.png", 60, 64, 64));
+    spriteSheets.put("tank_red_basic", getSpriteSheet("Resources/Tank_red_basic_strip60.png", 60, 64, 64));
+    spriteSheets.put("tank_red_light", getSpriteSheet("Resources/Tank_red_light_strip60.png", 60, 64, 64));
+    spriteSheets.put("tank_red_heavy", getSpriteSheet("Resources/Tank_red_heavy_strip60.png", 60, 64, 64));
+
+    spriteSheets.put("shell_basic", getSpriteSheet("Resources/Shell_basic_strip60.png", 60, 24, 24));
+    spriteSheets.put("shell_heavy", getSpriteSheet("Resources/Shell_heavy_strip60.png", 60, 24, 24));
+    spriteSheets.put("shell_light", getSpriteSheet("Resources/Shell_light_strip60.png", 60, 24, 24));
   }
 
-  public SpriteSheet getSpriteSheet(String inPath, int size) {
+  public SpriteSheet getSpriteSheet(String inPath, int size, int width, int height) {
     SpriteSheet s = new SpriteSheet(size, inPath);
     try {
       File f = new File(GameWorld.class.getResource(inPath).getFile());
       BufferedImage baseSheet = ImageIO.read(f);
       for (int col = 0; col < size; col++) {
-        s.sprites[col] = baseSheet.getSubimage(col * 64, 0 * 64, 64, 64);
+        s.sprites[col] = baseSheet.getSubimage(col * width, 0 * height, width, height);
       }
 
     } catch (Exception e) {
