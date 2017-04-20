@@ -59,10 +59,11 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
     loadSprites();
     map = new Map(file);
     map.load();
+    clock.addObserver(this);
     mapWidth = map.getWidth();
     mapHeight = map.getHeight();
     background = new Background(mapWidth*32, mapHeight*32, sprites.get("background"));
-    setDimension(mapWidth*16 + 16, mapHeight*17 + 16);
+    setDimension(mapWidth*16 + 16, mapHeight*17);
   }
 
   public void loadSprites()  {
@@ -72,13 +73,13 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
     sprites.put("wall_destroy", getSprite("Resources/Blue_wall2.png"));
     sprites.put("tank", getSprite("Resources/tank.png"));
 
-    spriteSheets.put("tank_blue_base", getSpriteSheet("Resources/Tank_blue_base_strip60.png", 30));
+    spriteSheets.put("tank_blue_base", getSpriteSheet("Resources/Tank_blue_base_strip60.png", 60));
     spriteSheets.put("tank_blue_basic", getSpriteSheet("Resources/Tank_blue_basic_strip60.png", 30));
     spriteSheets.put("tank_blue_light", getSpriteSheet("Resources/Tank_blue_light_strip60.png", 30));
     spriteSheets.put("tank_blue_heavy", getSpriteSheet("Resources/Tank_blue_heavy_strip60.png", 30));
 
 
-    spriteSheets.put("tank_red_base", getSpriteSheet("Resources/Tank_red_base_strip60.png", 30));
+    spriteSheets.put("tank_red_base", getSpriteSheet("Resources/Tank_red_base_strip60.png", 60));
     spriteSheets.put("tank_red_basic", getSpriteSheet("Resources/Tank_red_basic_strip60.png", 30));
     spriteSheets.put("tank_red_light", getSpriteSheet("Resources/Tank_red_light_strip60.png", 30));
     spriteSheets.put("tank_red_heavy", getSpriteSheet("Resources/Tank_red_heavy_strip60.png", 30));
@@ -123,6 +124,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
     while (thread == me) {
       this.requestFocusInWindow();
       repaint();
+      update();
     }
   }
 
@@ -135,16 +137,19 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
     for (int i = 0; i < players.size(); i++) {
       players.get( i ).repaint( graphic );
     }
-
   }
 
-  public Graphics2D createGraphics2D(int width, int height) {
-    Graphics2D pane = null;
-    if (bufferedImage == null)
-      bufferedImage = (BufferedImage) createImage(width, height);
-    pane = bufferedImage.createGraphics();
-    pane.setBackground(getBackground());
-    return pane;
+  public void update() {
+    for (int i = 0; i < walls.size(); i++) {
+      for (int j = 0; j < players.size(); j++) {
+         players.get( j ).collide( walls.get( i ));
+      }
+    }
+    for (int i = 0; i < players.size(); i++) {
+      for (int j = 1; j < players.size(); j++) {
+        players.get( i ).collide( players.get( j ));
+      }
+    }
   }
 
 // by Tyler:

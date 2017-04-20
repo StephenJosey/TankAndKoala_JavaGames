@@ -29,7 +29,7 @@ public abstract class GameObject {
     this.image = img;
     height = image.getHeight( observer );
     width = image.getWidth( observer );
-    this.location = new Rectangle(x * width, y * height, width, height);
+    this.location = new Rectangle((x * width)/2, (y * height)/2, width/2, height/2);
   }
 
   public int getX() {
@@ -66,6 +66,6 @@ public abstract class GameObject {
   }
 
   public void repaint( Graphics graphics ) {
-    graphics.drawImage( image, (location.x)/2, (location.y)/2, width/2, height/2, observer );
+    graphics.drawImage( image, (location.x), (location.y), width/2, height/2, observer );
   }
 }

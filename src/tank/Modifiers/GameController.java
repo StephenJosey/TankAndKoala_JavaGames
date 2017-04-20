@@ -19,6 +19,7 @@ public class GameController extends MotionController implements KeyListener{
   int[] keys;
   boolean player;
   String direction;
+  int turn;
 
   public GameController(Player player){
     this(player, new int[] {KeyEvent.VK_LEFT,KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_SPACE});
@@ -45,7 +46,13 @@ public class GameController extends MotionController implements KeyListener{
     notifyObservers();
   }
 
+  private void setTurn(int turn) {
+    this.turn = turn;
+    notifyObservers();
+  }
+
   public String getMove() { return direction; }
+  public int getTurn() { return turn; }
   public int getMoveState() { return moveState; }
 
   private void setFire(){
@@ -60,6 +67,11 @@ public class GameController extends MotionController implements KeyListener{
   private void unsetMove(String direction) {
     moveState = 0;
     this.direction = direction;
+    notifyObservers();
+  }
+
+  private void unsetTurn() {
+    turn = 0;
     notifyObservers();
   }
 
@@ -85,6 +97,7 @@ public class GameController extends MotionController implements KeyListener{
     // left
     if(code==keys[0]) {
       this.setMove("left");
+      this.setTurn(1);
     }
     // up
     else if(code==keys[1]) {
@@ -92,6 +105,7 @@ public class GameController extends MotionController implements KeyListener{
     }
     // right
     else if(code==keys[2]) {
+      this.setTurn(-1);
       this.setMove("right");
     }
     // down
@@ -109,13 +123,15 @@ public class GameController extends MotionController implements KeyListener{
   public void keyReleased(KeyEvent e) {
     int code = e.getKeyCode();
     if(code==keys[0]) {		//
-      this.unsetMove("left");
+      this.unsetTurn();
+      //this.unsetMove("left");
     }
     else if(code==keys[1]) {
       this.unsetMove("up");
     }
     else if(code==keys[2]) {
-      this.unsetMove("right");
+      this.unsetTurn();
+      //this.unsetMove("right");
     }
     else if(code==keys[3]) {
       this.unsetMove("down");

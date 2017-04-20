@@ -18,5 +18,7 @@ public class SpriteSheet {
     public int hashCode() {
         return name.hashCode();
     }
+
+    public BufferedImage[] getSprites() { return sprites; }
 }
 
