@@ -12,7 +12,7 @@ import tank.game.Player;
 /**
  * Created by jinghuihuang on 4/16/17.
  */
-public class GameController extends MotionController implements KeyListener{
+public class GameController extends Observable implements  KeyListener{
   Field field;
   Method action;
   int moveState;
@@ -88,9 +88,6 @@ public class GameController extends MotionController implements KeyListener{
     super.clearChanged();
   }
 
-  @Override
-  public void update(Observable o, Object arg) {
-  }
 
   public void keyPressed(KeyEvent e) {
     int code = e.getKeyCode();

@@ -13,6 +13,7 @@ public abstract class GameObject {
   protected int height;
   protected int width;
   protected Rectangle location;
+  protected boolean show;
 
 //  private BufferedImage image;\
   Image image;
@@ -66,6 +67,8 @@ public abstract class GameObject {
   }
 
   public void repaint( Graphics graphics ) {
-    graphics.drawImage( image, (location.x), (location.y), width/2, height/2, observer );
+    if (show) {
+      graphics.drawImage(image, (location.x), (location.y), width / 2, height / 2, observer);
+    }
   }
 }

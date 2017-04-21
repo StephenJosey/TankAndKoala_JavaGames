@@ -39,7 +39,7 @@ public class Player extends Tank implements Observer {
         }
 
         turn( turn );
-        update();
+        //update();
 
     }
     public void update() {

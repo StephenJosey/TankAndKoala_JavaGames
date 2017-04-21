@@ -1,12 +1,14 @@
 package tank; /**
  * Created by jinghuihuang on 4/15/17.
  */
+import java.awt.event.ActionEvent;
 import tank.game.*;
 import tank.game.Wall;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -17,16 +19,17 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
-public final class GameWorld extends JPanel implements Observer, Runnable {
+public final class GameWorld extends JPanel implements Observer, Runnable, ActionListener {
   private static final GameWorld game = new GameWorld();
-  private static final GameClock clock = new GameClock(); // -tyler
-  private BufferedImage bufferedImage;
+  private static final int FPS = 60;
+
   private ArrayList<Wall> walls;
   private ArrayList<Player> players;
   private Background background;
   private Thread thread;
   private boolean gameOver;
   private Dimension dimension;
+  private javax.swing.Timer timer;
 
   private int mapWidth, mapHeight;
 
@@ -43,6 +46,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
     spriteSheets = new HashMap<>();
     players = new ArrayList<Player>();
     dimension = new Dimension(800, 600);
+    timer = new Timer(1000 / (FPS), this);
   }
 
   public static GameWorld getInstance() {
@@ -59,11 +63,11 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
     loadSprites();
     map = new Map(file);
     map.load();
-    clock.addObserver(this);
     mapWidth = map.getWidth();
     mapHeight = map.getHeight();
     background = new Background(mapWidth*32, mapHeight*32, sprites.get("background"));
     setDimension(mapWidth*16 + 16, mapHeight*17);
+    timer.start();
   }
 
   public void loadSprites()  {
@@ -127,8 +131,9 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
     Thread me = Thread.currentThread();
     while (thread == me) {
       this.requestFocusInWindow();
-      repaint();
-      update();
+      try {
+        thread.sleep(23);
+      } catch (Exception e ) {}
     }
   }
 
@@ -156,23 +161,14 @@ public final class GameWorld extends JPanel implements Observer, Runnable {
     }
   }
 
-// by Tyler:
-  public void addClockObserver(Observer theObject){
-    clock.addObserver(theObject);
+  @Override
+  public void actionPerformed(ActionEvent e) {
+    repaint();
+    update();
+    for (int i = 0; i < players.size(); i++) {
+      players.get( i ).update();
+    }
   }
-
-  public void removeClockObserver(Observer theObject){
-    clock.deleteObserver(theObject);
-  }
-
-  public int getFrameNumber(){
-    return clock.getFrame();
-  }
-
-  public int getTime(){
-    return clock.getTime();
-  }
-// end by tyler
   public void addWall(Wall wall) {
     walls.add(wall);
   }
