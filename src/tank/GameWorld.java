@@ -46,7 +46,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
     spriteSheets = new HashMap<>();
     players = new ArrayList<Player>();
     dimension = new Dimension(800, 600);
-    timer = new Timer(1000 / (FPS), this);
+    timer = new Timer(1000 / (FPS/2), this);
   }
 
   public static GameWorld getInstance() {

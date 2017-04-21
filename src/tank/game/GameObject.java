@@ -30,6 +30,7 @@ public abstract class GameObject {
     this.image = img;
     height = image.getHeight( observer );
     width = image.getWidth( observer );
+    show = true;
     this.location = new Rectangle((x * width)/2, (y * height)/2, width/2, height/2);
   }
 

@@ -23,7 +23,8 @@ public class Player extends Tank implements Observer {
         controller = new GameController(this, keys);
         direction = 0;
         up = down = left = right = 0;
-        speed = 1;
+        speed = 2;
+        //this.location = new Rectangle(location.x + 4, location.y + 4, location.width - 4, location.height - 4);
     }
 
 
@@ -61,19 +62,19 @@ public class Player extends Tank implements Observer {
     }
 
     public void collide( GameObject object ) {
-        if ( object instanceof Wall || object instanceof Player ) {
-            if ( this.location.intersects(object.getLocation())) {
+        if ( object instanceof Wall || object instanceof Player  && ( this != object )) {
+            while ( this.location.intersects(object.getLocation())) {
                 if ( this.getY() < object.getY() ) {
-                    location.y -= speed;
+                    location.y -= 2;
                 }
                 if ( this.getY() > object.getY() ) {
-                    location.y += speed;
+                    location.y += 2;
                 }
                 if ( this.getX() > object.getX() ) {
-                    location.x += speed;
+                    location.x += 2;
                 }
                 if ( this.getX() < object.getX() ) {
-                    location.x -= speed;
+                    location.x -= 2;
                 }
             }
         }
