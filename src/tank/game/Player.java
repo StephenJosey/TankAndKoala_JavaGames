@@ -23,7 +23,7 @@ public class Player extends Tank implements Observer {
         controller = new GameController(this, keys);
         direction = 0;
         up = down = left = right = 0;
-        speed = 2;
+        speed = 1;
     }
 
 
