@@ -42,6 +42,8 @@ public abstract class GameObject {
     return location.y;
   }
 
+  public boolean getShow() { return show; }
+
   public int getWidth() {
     return this.image.getWidth( observer );
   }

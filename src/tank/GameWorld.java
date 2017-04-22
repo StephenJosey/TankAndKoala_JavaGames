@@ -148,10 +148,16 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
     }
   }
 
+
   public void update() {
     for (int i = 0; i < walls.size(); i++) {
-      for (int j = 0; j < players.size(); j++) {
-         players.get( j ).collide( walls.get( i ));
+      if ( walls.get( i ).getShow() ) {
+        for (int j = 0; j < players.size(); j++) {
+          players.get(j).collide(walls.get(i));
+          for (int k = 0; k < players.get(j).getBullets().size(); k++) {
+            players.get(j).getBullets().get(k).collide(walls.get(i));
+          }
+        }
       }
     }
     for (int i = 0; i < players.size(); i++) {
@@ -159,15 +165,17 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
         players.get( i ).collide( players.get( j ));
       }
     }
+    for (int i = 0; i < players.size(); i++) {
+      players.get( i ).update();
+    }
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    repaint();
     update();
-    for (int i = 0; i < players.size(); i++) {
-      players.get( i ).update();
-    }
+
+
+    repaint();
   }
   public void addWall(Wall wall) {
     walls.add(wall);

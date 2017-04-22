@@ -11,6 +11,7 @@ import java.awt.*;
 public class Bullet extends GameObject {
   int speed;
   int direction;
+  int damage;
   SpriteSheet spriteSheet;
   public Bullet(int x, int y, int direction) {
     //super(x, y, GameWorld.getInstance().spriteSheets.get("shell_basic").getSprites()[0]);
@@ -21,17 +22,40 @@ public class Bullet extends GameObject {
     spriteSheet = GameWorld.getInstance().spriteSheets.get("shell_basic");
     show = true;
     speed = 5;
+    damage = 20;
     this.direction = direction;
   }
 
   public void update() {
-    int dy = (int) (5 * Math.cos(Math.toRadians(this.direction + 90)));
-    int dx = (int) (5 * Math.sin(Math.toRadians(this.direction + 90)));
-    location.y += dy;
-    location.x += dx;
+    if (show) {
+      int dy = (int) (5 * Math.cos(Math.toRadians(this.direction + 90)));
+      int dx = (int) (5 * Math.sin(Math.toRadians(this.direction + 90)));
+      location.y += dy;
+      location.x += dx;
+    }
+  }
+
+  public void collide( GameObject object ) {
+    if (show) {
+      if (object instanceof Wall) {
+        if (this.location.intersects(object.getLocation())) {
+          if (((Wall) object).isDestructible()) {
+            ((Wall) object).setShow(false);
+            this.show = false;
+          }
+          this.show = false;
+        }
+      } else if ( object instanceof Player && this != object ) {
+        if (this.location.intersects(object.getLocation())) {
+          ((Player)object).damage( damage );
+        }
+      }
+    }
   }
 
   public void draw(Graphics graphics) {
-    graphics.drawImage(spriteSheet.getSprites()[direction / 6],location.x, location.y, observer);
+    if (show) {
+      graphics.drawImage(spriteSheet.getSprites()[direction / 6], location.x, location.y, observer);
+    }
   }
 }

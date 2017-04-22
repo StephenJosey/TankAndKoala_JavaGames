@@ -12,9 +12,14 @@ import tank.SpriteSheet;
 * Created by Stephen on 4/15/2017.
 */
 public class Player extends Tank implements Observer {
+    static final int RELOAD_TIME = 10;
+    static final int SPEED = 2;
+
     public int up, down, left, right;
     int direction;
     int speed;
+    int reload;
+    boolean isReloading;
     SpriteSheet spriteSheet;
     private GameController controller;
     public Player( int x, int y, int direction, SpriteSheet spriteSheet, int [] keys ) {
@@ -23,7 +28,9 @@ public class Player extends Tank implements Observer {
         controller = new GameController(this, keys);
         this.direction = direction ;
         up = down = left = right = 0;
-        speed = 2;
+        speed = SPEED;
+        reload = RELOAD_TIME;
+        isReloading = false;
     }
 
 
@@ -40,7 +47,6 @@ public class Player extends Tank implements Observer {
         }
         isFiring = fire;
         turn( turn );
-        //update();
 
     }
     public void update() {
@@ -54,7 +60,14 @@ public class Player extends Tank implements Observer {
           fire();
         }
         for (int i= 0; i < bullets.size(); i++) {
-          bullets.get( i ).update();
+            if ( bullets.get(i).show ) {
+                bullets.get(i).update();
+            } else {
+                bullets.remove( i );
+            }
+        }
+        if (isReloading) {
+            reload();
         }
     }
 
@@ -68,7 +81,26 @@ public class Player extends Tank implements Observer {
     }
 
     public void fire() {
-      bullets.add(new Bullet( getX() - 6, getY(), direction ) );
+        if (! isReloading ) {
+            bullets.add(new Bullet(getX() - 6, getY(), direction));
+            isReloading = true;
+        }
+    }
+
+    public void reload() {
+        reload--;
+        if ( reload < 0 ) {
+            isReloading = false;
+            reload = RELOAD_TIME;
+        }
+    }
+
+    public void damage(int damage) {
+        health -= damage;
+    }
+
+    public boolean isDead() {
+        return health < 0;
     }
 
     public void collide( GameObject object ) {
@@ -88,6 +120,10 @@ public class Player extends Tank implements Observer {
                 }
             }
         }
+    }
+
+    public ArrayList<Bullet> getBullets() {
+        return bullets;
     }
 
     @Override

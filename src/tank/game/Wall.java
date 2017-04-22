@@ -14,6 +14,14 @@ public class Wall extends GameObject {
 
   }
 
+  public boolean isDestructible() {
+    return destructible;
+  }
+
+  public void setShow(boolean show ) {
+    this.show = show;
+  }
+
   public boolean collision(GameObject object) {
     return location.intersects(object.getLocation());
   }
