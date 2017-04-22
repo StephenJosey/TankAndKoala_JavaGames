@@ -3,6 +3,7 @@ package tank.game;
 import tank.SpriteSheet;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * Created by Stephen on 4/15/2017.
@@ -11,6 +12,7 @@ public class Tank extends GameObject {
     int health;
     int speed;
     boolean isFiring;
+    ArrayList<Bullet> bullets;
     SpriteSheet spriteSheet;
 
     public Tank( int x, int y, SpriteSheet spriteSheet ) {
@@ -18,6 +20,7 @@ public class Tank extends GameObject {
         this.spriteSheet = spriteSheet;
         health = 100;
         speed = 10;
+        bullets = new ArrayList<Bullet>();
     }
 
     public int getHealth() {

@@ -17,14 +17,13 @@ public class Player extends Tank implements Observer {
     int speed;
     SpriteSheet spriteSheet;
     private GameController controller;
-    public Player( int x, int y, SpriteSheet spriteSheet, int [] keys ) {
+    public Player( int x, int y, int direction, SpriteSheet spriteSheet, int [] keys ) {
         super(x / 2, y / 2, spriteSheet);
         this.spriteSheet = spriteSheet;
         controller = new GameController(this, keys);
-        direction = 0;
+        this.direction = direction ;
         up = down = left = right = 0;
         speed = 2;
-        //this.location = new Rectangle(location.x + 4, location.y + 4, location.width - 4, location.height - 4);
     }
 
 
@@ -32,33 +31,44 @@ public class Player extends Tank implements Observer {
         String direction = controller.getMove();
         int moveState = controller.getMoveState();
         int turn = controller.getTurn();
+        boolean fire = controller.getFire();
         Field thisDirection = null;
         try {
             thisDirection = this.getClass().getDeclaredField(direction);
             thisDirection.setInt(this, moveState);
         } catch (Exception e) {
         }
-
+        isFiring = fire;
         turn( turn );
         //update();
 
     }
     public void update() {
         if ( up == 1 || down == 1 ) {
-            int dy = (int)( 5 * Math.cos( Math.toRadians(this.direction+90 )));
-            int dx = (int)( 5 * Math.sin( Math.toRadians(this.direction+90 )));
-            location.y+=dy*(up-down) / speed;
-            location.x+=dx*(up-down) / speed;
+          int dy = (int) (5 * Math.cos(Math.toRadians(this.direction + 90)));
+          int dx = (int) (5 * Math.sin(Math.toRadians(this.direction + 90)));
+          location.y += dy * (up - down) / speed;
+          location.x += dx * (up - down) / speed;
+        }
+        if (isFiring) {
+          fire();
+        }
+        for (int i= 0; i < bullets.size(); i++) {
+          bullets.get( i ).update();
         }
     }
 
     public void turn(int dir) {
         direction += 6*dir;
         if ( direction < 0 ) {
-            direction = 354;
-        } else if ( direction > 354 ) {
+            direction = 359;
+        } else if ( direction > 359 ) {
             direction = 0;
         }
+    }
+
+    public void fire() {
+      bullets.add(new Bullet( getX() - 6, getY(), direction ) );
     }
 
     public void collide( GameObject object ) {
@@ -89,5 +99,8 @@ public class Player extends Tank implements Observer {
         //graphics.setColor(Color.RED);
         //graphics.drawRect( location.x, location.y, location.width, location.height);
         graphics.drawImage( spriteSheet.getSprites()[ turn ], (location.x), (location.y), width/2, height/2, observer );
+        for (int i = 0; i < bullets.size(); i++) {
+          bullets.get( i ).draw(graphics);
+        }
     }
 }

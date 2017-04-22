@@ -70,12 +70,12 @@ public class Map implements Observer {
 
                     if(c=='3'){
                         int[] controls = {KeyEvent.VK_A,KeyEvent.VK_W, KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_SPACE};
-                        world.addPlayer(new Player(i, h, world.spriteSheets.get("tank_blue_base"), controls));
+                        world.addPlayer(new Player(i, h, 180, world.spriteSheets.get("tank_blue_base"), controls));
                     }
 
                     if(c=='4'){
                         int[] controls = new int[] {KeyEvent.VK_LEFT,KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_ENTER};
-                        world.addPlayer(new Player(i, h, world.spriteSheets.get("tank_red_base"), controls));
+                        world.addPlayer(new Player(i, h, 0, world.spriteSheets.get("tank_red_base"), controls));
                     }
 
                 }

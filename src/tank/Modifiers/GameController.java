@@ -20,6 +20,7 @@ public class GameController extends Observable implements  KeyListener{
   boolean player;
   String direction;
   int turn;
+  boolean fire;
 
   public GameController(Player player){
     this(player, new int[] {KeyEvent.VK_LEFT,KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_SPACE});
@@ -56,11 +57,7 @@ public class GameController extends Observable implements  KeyListener{
   public int getMoveState() { return moveState; }
 
   private void setFire(){
-    field = null;
-    try{
-      action = Player.class.getMethod("startFiring");
-      this.setChanged();
-    } catch(NoSuchMethodException e){e.printStackTrace();}
+    fire = true;
     notifyObservers();
   }
 
@@ -76,14 +73,13 @@ public class GameController extends Observable implements  KeyListener{
   }
 
   private void unsetFire(){
-    field = null;
-    try{
-      action = Player.class.getMethod("stopFiring");
-      this.setChanged();
-    } catch(NoSuchMethodException e){e.printStackTrace();}
+    fire = false;
     notifyObservers();
   }
 
+  public boolean getFire() {
+    return fire;
+  }
   public void clearChanged(){
     super.clearChanged();
   }
