@@ -38,6 +38,7 @@ public class Bullet extends GameObject {
     if (show) {
       if (object instanceof Wall) {
         if (this.location.intersects(object.getLocation())) {
+          GameSound.play("Resources/Explosion.wav");
           this.show = false;
           if (((Wall) object).isDestructible()) {
             ((Wall) object).setShow(false);

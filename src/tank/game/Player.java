@@ -84,6 +84,7 @@ public class Player extends Tank implements Observer {
         if (! isReloading ) {
             bullets.add(new Bullet(getX() - 6, getY()+18, direction));
             isReloading = true;
+            GameSound.play("Resources/TankFiring.wav");
         }
     }
 
