@@ -17,11 +17,14 @@ public class Background extends GameObject {
 
     @Override
     public void repaint(Graphics graphic) {
-        GameWorld game = GameWorld.getInstance();
-        for (int y = 0; y < game.map.getHeight()*16; y += getHeight()) {
-            for (int x = 0; x < game.map.getWidth()*16; x += getWidth()) {
-                graphic.drawImage(getImage(), x, y, observer);
+        if ( draw ) {
+            GameWorld game = GameWorld.getInstance();
+            for (int y = 0; y < game.map.getHeight() * 32; y += getHeight()) {
+                for (int x = 0; x < game.map.getWidth() * 32; x += getWidth()) {
+                    graphic.drawImage(getImage(), x, y, observer);
+                }
             }
         }
+        //draw = false;
     }
 }

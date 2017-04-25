@@ -14,6 +14,8 @@ public abstract class GameObject {
   protected int width;
   protected Rectangle location;
   protected boolean show;
+  protected boolean draw;
+  int mapX, mapY;
 
 //  private BufferedImage image;\
   Image image;
@@ -31,7 +33,10 @@ public abstract class GameObject {
     height = image.getHeight( observer );
     width = image.getWidth( observer );
     show = true;
-    this.location = new Rectangle((x * width)/2, (y * height)/2, width/2, height/2);
+    mapX = x;
+    mapY = y;
+    this.location = new Rectangle((x * width), (y * height), width, height);
+    draw = true;
   }
 
   public int getX() {
@@ -41,6 +46,9 @@ public abstract class GameObject {
   public int getY() {
     return location.y;
   }
+
+  public int getMapX() { return mapX; }
+  public int getMapY() { return mapY; }
 
   public boolean getShow() { return show; }
 
@@ -70,8 +78,15 @@ public abstract class GameObject {
   }
 
   public void repaint( Graphics graphics ) {
-    if (show) {
-      graphics.drawImage(image, (location.x), (location.y), width / 2, height / 2, observer);
+    if (show && draw) {
+      graphics.drawImage(image, (location.x), (location.y), width , height , observer);
     }
+    //draw = false;
+  }
+  public void draw(int x, int y, Graphics graphics ) {
+    if (show) {
+      graphics.drawImage(image, x, y, width , height , observer);
+    }
+
   }
 }

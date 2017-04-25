@@ -11,7 +11,6 @@ public class Wall extends GameObject {
   public Wall ( int x, int y, Image img, boolean destructible) {
     super( x, y, img );
     this.destructible = destructible;
-
   }
 
   public boolean isDestructible() {

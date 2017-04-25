@@ -17,8 +17,9 @@ public class Map implements Observer {
     Integer position;
     String filename;
     BufferedReader level;
-    int w, h;
+    int width, height;
     int endgameDelay = 100;	// don't immediately end on game end
+    GameObject map[][];
 
     /*Constructor sets up arrays of enemies in a LinkedHashMap*/
     public Map(String filename){
@@ -27,12 +28,13 @@ public class Map implements Observer {
         try {
             level = new BufferedReader(new InputStreamReader(GameWorld.class.getResource("Resources/" +filename).openStream()));
             line = level.readLine();
-            w = line.length();
-            h=0;
+            width = line.length();
+            height=0;
             while(line!=null){
-                h++;
+                height++;
                 line = level.readLine();
             }
+            map = new GameObject[height][width + 1];
             level.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,34 +54,36 @@ public class Map implements Observer {
         String line;
         try {
             line = level.readLine();
-            w = line.length();
-            h=0;
+            width = line.length();
+            height=0;
             while(line!=null){
                 for(int i = 0, n = line.length() ; i < n ; i++) {
-                    char c = line.charAt(i);
+                    char mapCode = line.charAt(i);
 
-                    if(c=='1'){
-                        Wall wall = new Wall(i ,h , world.sprites.get("wall"), false);
+                    if(mapCode=='1') {
+                        Wall wall = new Wall(i, height, world.sprites.get("wall"), false);
                         world.addWall(wall);
-                    }
-
-                    if(c=='2'){
-                        Wall wall = new Wall(i,h, world.sprites.get("wall_destroy"), true);
+                        map[height][i] = wall;
+                    } else if(mapCode=='2') {
+                        Wall wall = new Wall(i, height, world.sprites.get("wall_destroy"), true);
                         world.addWall(wall);
-                    }
-
-                    if(c=='3'){
+                        map[height][i] = wall;
+                    } else if(mapCode=='3'){
                         int[] controls = {KeyEvent.VK_A,KeyEvent.VK_W, KeyEvent.VK_D, KeyEvent.VK_S, KeyEvent.VK_SPACE};
-                        world.addPlayer(new Player(i, h, 180, world.spriteSheets.get("tank_blue_base"), controls));
-                    }
-
-                    if(c=='4'){
+                        Player player = new Player(i, height, 180, world.spriteSheets.get("tank_blue_base"), controls);
+                        world.addPlayer( player );
+                        map[height][i] = player;
+                    } else if(mapCode=='4'){
                         int[] controls = new int[] {KeyEvent.VK_LEFT,KeyEvent.VK_UP, KeyEvent.VK_RIGHT, KeyEvent.VK_DOWN, KeyEvent.VK_ENTER};
-                        world.addPlayer(new Player(i, h, 0, world.spriteSheets.get("tank_red_base"), controls));
+                        Player player = new Player(i, height, 0, world.spriteSheets.get("tank_red_base"), controls);
+                        world.addPlayer( player );
+                        map[height][i] = player;
+                    } else {
+                        map[height][i] = null;
                     }
 
                 }
-                h++;
+                height++;
                 line = level.readLine();
             }
             level.close();
@@ -88,8 +92,9 @@ public class Map implements Observer {
         }
     }
 
-    public int getWidth() { return w; }
-    public int getHeight() { return h; }
+    public int getWidth() { return width; }
+    public int getHeight() { return height; }
+    public GameObject[][] getMap() { return map; }
 
     /*Level observes GameClock and updates on every tick*/
     @Override

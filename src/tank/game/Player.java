@@ -12,7 +12,7 @@ import tank.SpriteSheet;
 * Created by Stephen on 4/15/2017.
 */
 public class Player extends Tank implements Observer {
-    static final int RELOAD_TIME = 10;
+    static final int RELOAD_TIME = 30;
     static final int SPEED = 2;
 
     public int up, down, left, right;
@@ -82,7 +82,7 @@ public class Player extends Tank implements Observer {
 
     public void fire() {
         if (! isReloading ) {
-            bullets.add(new Bullet(getX() - 6, getY(), direction));
+            bullets.add(new Bullet(getX() - 6, getY()+18, direction));
             isReloading = true;
         }
     }
@@ -132,9 +132,7 @@ public class Player extends Tank implements Observer {
         if ( direction > 0 ) {
             turn = direction / 6;
         }
-        //graphics.setColor(Color.RED);
-        //graphics.drawRect( location.x, location.y, location.width, location.height);
-        graphics.drawImage( spriteSheet.getSprites()[ turn ], (location.x), (location.y), width/2, height/2, observer );
+        graphics.drawImage( spriteSheet.getSprites()[ turn ], (location.x), (location.y), width, height, observer );
         for (int i = 0; i < bullets.size(); i++) {
           bullets.get( i ).draw(graphics);
         }

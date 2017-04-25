@@ -14,7 +14,6 @@ public class Bullet extends GameObject {
   int damage;
   SpriteSheet spriteSheet;
   public Bullet(int x, int y, int direction) {
-    //super(x, y, GameWorld.getInstance().spriteSheets.get("shell_basic").getSprites()[0]);
     image = GameWorld.getInstance().spriteSheets.get("shell_basic").getSprites()[0];
     width = image.getWidth(observer);
     height = image.getHeight(observer);
@@ -39,14 +38,14 @@ public class Bullet extends GameObject {
     if (show) {
       if (object instanceof Wall) {
         if (this.location.intersects(object.getLocation())) {
+          this.show = false;
           if (((Wall) object).isDestructible()) {
             ((Wall) object).setShow(false);
-            this.show = false;
           }
-          this.show = false;
         }
       } else if ( object instanceof Player && this != object ) {
         if (this.location.intersects(object.getLocation())) {
+          this.show = false;
           ((Player)object).damage( damage );
         }
       }

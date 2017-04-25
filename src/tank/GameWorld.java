@@ -19,12 +19,13 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
-public final class GameWorld extends JPanel implements Observer, Runnable, ActionListener {
+public final class GameWorld extends JFrame implements Observer, Runnable, ActionListener {
   private static final GameWorld game = new GameWorld();
   private static final int FPS = 60;
 
   private ArrayList<Wall> walls;
   private ArrayList<Player> players;
+  private ArrayList<Screen> screens;
   private Background background;
   private Thread thread;
   private boolean gameOver;
@@ -41,12 +42,14 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
 
   private GameWorld() {
     this.setFocusable(true);
+    this.setName("Tank Wars");
     walls = new ArrayList<Wall>();
     sprites = new HashMap<String,Image>();
     spriteSheets = new HashMap<>();
     players = new ArrayList<Player>();
     dimension = new Dimension(800, 600);
-    timer = new Timer(1000 / (FPS/2), this);
+    timer = new Timer(1000 / (FPS), this);
+    screens = new ArrayList<Screen>();
   }
 
   public static GameWorld getInstance() {
@@ -66,7 +69,15 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
     mapWidth = map.getWidth();
     mapHeight = map.getHeight();
     background = new Background(mapWidth*32, mapHeight*32, sprites.get("background"));
-    setDimension(mapWidth*16 + 16, mapHeight*17);
+    setDimension(1000, 500);
+    screens.add( new Screen(500, 500, players.get(0)));
+    screens.add( new Screen(500, 500, players.get(1)));
+    this.setLayout(new GridLayout(1, 2));
+    this.getContentPane().add(screens.get(0));
+    this.getContentPane().add(screens.get(1));
+    this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    this.setSize( game.getDimension() );
+    this.setVisible(true);
     timer.start();
   }
 
@@ -137,7 +148,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
     }
   }
 
-  public void paint(Graphics graphic) {
+  /*public void paint(Graphics graphic) {
     super.paintComponent(graphic);
     background.repaint(graphic);
     for (int i = 0; i < walls.size(); i++) {
@@ -146,7 +157,8 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
     for (int i = 0; i < players.size(); i++) {
       players.get( i ).repaint( graphic );
     }
-  }
+  }*/
+
 
 
   public void update() {
@@ -173,15 +185,22 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
   @Override
   public void actionPerformed(ActionEvent e) {
     update();
-
-
-    repaint();
+    for (int i = 0; i < screens.size(); i++) {
+      screens.get(i).repaint();
+      screens.get(i).update();
+    }
   }
+
+  public Map getMap() { return map; }
+
   public void addWall(Wall wall) {
     walls.add(wall);
   }
   public void addPlayer(Player player) { players.add(player); }
 
+  public ArrayList<Player> getPlayers() { return players; }
+  public ArrayList<Wall> getWalls() { return walls; }
+  public Background getBackgroundComponent() { return background; }
   @Override
   public void update(Observable o, Object arg) {
   }
