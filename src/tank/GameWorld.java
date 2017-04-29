@@ -11,9 +11,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Observable;
@@ -22,6 +20,7 @@ import java.util.Observer;
 public final class GameWorld extends JFrame implements Observer, Runnable, ActionListener {
   private static final GameWorld game = new GameWorld();
   private static final int FPS = 60;
+  private static final int SCREEN_SIZE = 700;
 
   private ArrayList<Wall> walls;
   private ArrayList<Player> players;
@@ -69,9 +68,9 @@ public final class GameWorld extends JFrame implements Observer, Runnable, Actio
     mapWidth = map.getWidth();
     mapHeight = map.getHeight();
     background = new Background(mapWidth*32, mapHeight*32, sprites.get("background"));
-    setDimension(1000, 500);
-    screens.add( new Screen(500, 500, players.get(0)));
-    screens.add( new Screen(500, 500, players.get(1)));
+    setDimension(SCREEN_SIZE * 2, SCREEN_SIZE);
+    screens.add( new Screen(SCREEN_SIZE, SCREEN_SIZE, players.get(0)));
+    screens.add( new Screen(SCREEN_SIZE, SCREEN_SIZE, players.get(1)));
     this.setLayout(new GridLayout(1, 2));
     this.getContentPane().add(screens.get(0));
     this.getContentPane().add(screens.get(1));
@@ -144,21 +143,10 @@ public final class GameWorld extends JFrame implements Observer, Runnable, Actio
       this.requestFocusInWindow();
       try {
         thread.sleep(23);
-      } catch (Exception e ) {}
+      } catch (Exception e) {
+      }
     }
   }
-
-  /*public void paint(Graphics graphic) {
-    super.paintComponent(graphic);
-    background.repaint(graphic);
-    for (int i = 0; i < walls.size(); i++) {
-      walls.get( i ).repaint( graphic );
-    }
-    for (int i = 0; i < players.size(); i++) {
-      players.get( i ).repaint( graphic );
-    }
-  }*/
-
 
 
   public void update() {
@@ -175,8 +163,12 @@ public final class GameWorld extends JFrame implements Observer, Runnable, Actio
     for (int i = 0; i < players.size(); i++) {
       for (int j = 1; j < players.size(); j++) {
         players.get( i ).collide( players.get( j ));
+        for (int k = 0; k < players.get(i).getBullets().size(); k++) {
+          players.get(i).getBullets().get( k ).collide( players.get (j) );
+        }
       }
     }
+
     for (int i = 0; i < players.size(); i++) {
       players.get( i ).update();
     }

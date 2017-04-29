@@ -31,9 +31,9 @@ public class Screen extends JPanel {
         map = GameWorld.getInstance().getMap().getMap();
         this.player = player;
         viewXMin = 0;
-        viewXMax = GameWorld.getInstance().getMap().getWidth()*32;
+        viewXMax = GameWorld.getInstance().getMap().getWidth()*16;
         viewYMin = 0;
-        viewYMax = GameWorld.getInstance().getMap().getHeight()*32;
+        viewYMax = GameWorld.getInstance().getMap().getHeight()*16;
         background = GameWorld.getInstance().getBackgroundComponent();
     }
 
@@ -53,17 +53,40 @@ public class Screen extends JPanel {
 
     }
 
+    public void drawMiniMapLeft(Graphics graphics, int scale) {
+      graphics.translate(camX + width - viewXMax/scale - 25, camY + height - viewYMax/scale - 175);
+        //background.drawScaled(graphics, );
+      for (int i = 0; i < walls.size(); i++) {
+        walls.get( i ).drawScaled( graphics, scale );
+      }
+      for (int i = 0; i < GameWorld.getInstance().getPlayers().size(); i++) {
+        GameWorld.getInstance().getPlayers().get(i).drawScaled(graphics, scale);
+      }
+
+    }
+  public void drawMiniMapRight(Graphics graphics, int scale) {
+    graphics.translate(camX - width + viewXMax/scale, camY + height - viewYMax/scale - 175);
+    //background.drawScaled(graphics, );
+    for (int i = 0; i < GameWorld.getInstance().getPlayers().size(); i++) {
+      GameWorld.getInstance().getPlayers().get(i).drawScaled(graphics, scale);
+    }
+    for (int i = 0; i < walls.size(); i++) {
+      walls.get( i ).drawScaled( graphics, scale );
+    }
+  }
+
     @Override
     public void paintComponent(Graphics graphics) {
-        super.paintComponent(graphics);
-        graphics.translate(camX * -1, camY * -1);
-        background.repaint(graphics);
-        for (int i = 0; i < GameWorld.getInstance().getPlayers().size(); i++) {
-            GameWorld.getInstance().getPlayers().get(i).repaint(graphics);
-        }
-        //player.repaint(graphics);
-        for (int i = 0; i < walls.size(); i++) {
-            walls.get( i ).repaint( graphics );
-        }
+      super.paintComponent(graphics);
+      graphics.translate(camX * -1, camY * -1);
+      background.repaint(graphics);
+      for (int i = 0; i < walls.size(); i++) {
+        walls.get( i ).repaint( graphics );
+      }
+      for (int i = 0; i < GameWorld.getInstance().getPlayers().size(); i++) {
+          GameWorld.getInstance().getPlayers().get(i).repaint(graphics);
+      }
+
+      //drawMiniMap( graphics, 6 );
     }
 }
