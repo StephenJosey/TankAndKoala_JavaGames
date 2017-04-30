@@ -17,19 +17,27 @@ import java.util.HashMap;
 import java.util.Observable;
 import java.util.Observer;
 
-public final class GameWorld extends JFrame implements Observer, Runnable, ActionListener {
+public final class GameWorld extends JPanel implements Observer, Runnable, ActionListener {
   private static final GameWorld game = new GameWorld();
   private static final int FPS = 60;
   private static final int SCREEN_SIZE = 700;
 
   private ArrayList<Wall> walls;
   private ArrayList<Player> players;
-  private ArrayList<Screen> screens;
   private Background background;
   private Thread thread;
   private boolean gameOver;
+  private String winner;
   private Dimension dimension;
   private javax.swing.Timer timer;
+
+  private BufferedImage screen;
+  int viewXMin;
+  int viewXMax;
+  int viewYMin;
+  int viewYMax;
+  int camX;
+  int camY;
 
   private int mapWidth, mapHeight;
 
@@ -48,7 +56,6 @@ public final class GameWorld extends JFrame implements Observer, Runnable, Actio
     players = new ArrayList<Player>();
     dimension = new Dimension(800, 600);
     timer = new Timer(1000 / (FPS), this);
-    screens = new ArrayList<Screen>();
   }
 
   public static GameWorld getInstance() {
@@ -61,7 +68,7 @@ public final class GameWorld extends JFrame implements Observer, Runnable, Actio
   }
 
   public void init(String file) {
-    setBackground( Color.black);
+    //setBackground( Color.black);
     loadSprites();
     map = new Map(file);
     map.load();
@@ -69,12 +76,11 @@ public final class GameWorld extends JFrame implements Observer, Runnable, Actio
     mapHeight = map.getHeight();
     background = new Background(mapWidth*32, mapHeight*32, sprites.get("background"));
     setDimension(SCREEN_SIZE * 2, SCREEN_SIZE);
-    screens.add( new Screen(SCREEN_SIZE, SCREEN_SIZE, players.get(0)));
-    screens.add( new Screen(SCREEN_SIZE, SCREEN_SIZE, players.get(1)));
-    this.setLayout(new GridLayout(1, 2));
-    this.getContentPane().add(screens.get(0));
-    this.getContentPane().add(screens.get(1));
-    this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    screen = new BufferedImage(mapWidth*32 + SCREEN_SIZE, mapHeight*32 + SCREEN_SIZE, BufferedImage.TYPE_INT_RGB);
+    viewXMin = 0;
+    viewXMax = getMap().getWidth()*16;
+    viewYMin = 0;
+    viewYMax = getMap().getHeight()*16;
     this.setSize( game.getDimension() );
     this.setVisible(true);
     timer.start();
@@ -92,7 +98,6 @@ public final class GameWorld extends JFrame implements Observer, Runnable, Actio
     spriteSheets.put("tank_blue_light", getSpriteSheet("Resources/Tank_blue_light_strip60.png", 60, 64, 64));
     spriteSheets.put("tank_blue_heavy", getSpriteSheet("Resources/Tank_blue_heavy_strip60.png", 60, 64, 64));
 
-
     spriteSheets.put("tank_red_base", getSpriteSheet("Resources/Tank_red_base_strip60.png", 60, 64, 64));
     spriteSheets.put("tank_red_basic", getSpriteSheet("Resources/Tank_red_basic_strip60.png", 60, 64, 64));
     spriteSheets.put("tank_red_light", getSpriteSheet("Resources/Tank_red_light_strip60.png", 60, 64, 64));
@@ -101,6 +106,8 @@ public final class GameWorld extends JFrame implements Observer, Runnable, Actio
     spriteSheets.put("shell_basic", getSpriteSheet("Resources/Shell_basic_strip60.png", 60, 24, 24));
     spriteSheets.put("shell_heavy", getSpriteSheet("Resources/Shell_heavy_strip60.png", 60, 24, 24));
     spriteSheets.put("shell_light", getSpriteSheet("Resources/Shell_light_strip60.png", 60, 24, 24));
+
+    spriteSheets.put("explosion", getSpriteSheet( "Resources/Explosion_small_strip6.png", 6, 32, 32));
   }
 
   public SpriteSheet getSpriteSheet(String inPath, int size, int width, int height) {
@@ -109,7 +116,7 @@ public final class GameWorld extends JFrame implements Observer, Runnable, Actio
       File f = new File(GameWorld.class.getResource(inPath).getFile());
       BufferedImage baseSheet = ImageIO.read(f);
       for (int col = 0; col < size; col++) {
-        s.sprites[col] = baseSheet.getSubimage(col * width, 0 * height, width, height);
+        s.sprites[col] = baseSheet.getSubimage(col * width, 0, width, height);
       }
 
     } catch (Exception e) {
@@ -142,44 +149,104 @@ public final class GameWorld extends JFrame implements Observer, Runnable, Actio
     while (thread == me) {
       this.requestFocusInWindow();
       try {
-        thread.sleep(23);
+        Thread.sleep(23);
       } catch (Exception e) {
       }
     }
   }
 
+  public void updateCam( Player player ) {
+    camX = player.getX() - SCREEN_SIZE/2;
+    camY = player.getY() - SCREEN_SIZE/2;
+    if (camX > viewXMax) {
+      camX = viewXMax;
+    } else if (camX < 0) {
+      camX = 0;
+    }
+    if (camY > viewYMax) {
+      camY = viewYMax;
+    } else if (camY < 0) {
+      camY = 0;
+    }
+  }
+
+  public void drawScreens() {
+    if (! isGameOver() ) {
+      Graphics graphics = screen.getGraphics();
+      background.repaint(graphics);
+      for (int i = 0; i < walls.size(); i++) {
+        walls.get(i).repaint(graphics);
+      }
+      for (int i = 0; i < players.size(); i++) {
+        players.get(i).repaint(graphics);
+      }
+    }
+  }
+
+  @Override
+  public void paintComponent(Graphics graphics) {
+    if ( !isGameOver() ) {
+      updateCam(players.get(0));
+      graphics.drawImage(screen.getSubimage(camX, camY, SCREEN_SIZE, SCREEN_SIZE), 0, 0, null);
+      updateCam(players.get(1));
+      graphics.setColor(Color.black);
+      graphics.drawLine(SCREEN_SIZE, 0, SCREEN_SIZE, SCREEN_SIZE);
+      graphics.drawImage(screen.getSubimage(camX, camY, SCREEN_SIZE, SCREEN_SIZE), SCREEN_SIZE + 1, 0, null);
+      drawMiniMap(graphics, 6);
+    } else {
+      for (int i = 0; i < players.size(); i++) {
+        if (players.get(i).getLives() > 0) {
+          graphics.setFont(new Font("TimesRoman", Font.PLAIN, 50));
+          graphics.drawString("Player " + (i + 1) + " wins!", SCREEN_SIZE / 2, SCREEN_SIZE / 2);
+        }
+      }
+    }
+  }
+
+  public void drawMiniMap(Graphics graphics, int scale) {
+    graphics.translate(SCREEN_SIZE - mapWidth*scale/2, SCREEN_SIZE - (mapHeight+2)*scale);
+    for (int i = 0; i < players.size(); i++) {
+      players.get(i).drawScaled(graphics, scale);
+    }
+    for (int i = 0; i < walls.size(); i++) {
+      walls.get( i ).drawScaled( graphics, scale );
+    }
+  }
+
 
   public void update() {
-    for (int i = 0; i < walls.size(); i++) {
-      if ( walls.get( i ).getShow() ) {
-        for (int j = 0; j < players.size(); j++) {
-          players.get(j).collide(walls.get(i));
-          for (int k = 0; k < players.get(j).getBullets().size(); k++) {
-            players.get(j).getBullets().get(k).collide(walls.get(i));
+    if ( ! isGameOver() ) {
+      for (int i = 0; i < walls.size(); i++) {
+        if (walls.get(i).getShow()) {
+          for (int j = 0; j < players.size(); j++) {
+            players.get(j).collide(walls.get(i));
+            for (int k = 0; k < players.get(j).getBullets().size(); k++) {
+              players.get(j).getBullets().get(k).collide(walls.get(i));
+            }
           }
         }
       }
-    }
-    for (int i = 0; i < players.size(); i++) {
-      for (int j = 1; j < players.size(); j++) {
-        players.get( i ).collide( players.get( j ));
-        for (int k = 0; k < players.get(i).getBullets().size(); k++) {
-          players.get(i).getBullets().get( k ).collide( players.get (j) );
+      for (int i = 0; i < players.size(); i++) {
+        for (int j = 0; j < players.size(); j++) {
+          players.get(i).collide(players.get(j));
+          for (int k = 0; k < players.get(i).getBullets().size(); k++) {
+            players.get(i).getBullets().get(k).collide(players.get(j));
+          }
         }
       }
-    }
 
-    for (int i = 0; i < players.size(); i++) {
-      players.get( i ).update();
+      for (int i = 0; i < players.size(); i++) {
+          players.get(i).update();
+      }
     }
   }
 
   @Override
   public void actionPerformed(ActionEvent e) {
-    update();
-    for (int i = 0; i < screens.size(); i++) {
-      screens.get(i).repaint();
-      screens.get(i).update();
+    if ( !isGameOver() ) {
+      update();
+      drawScreens();
+      repaint();
     }
   }
 
@@ -198,4 +265,7 @@ public final class GameWorld extends JFrame implements Observer, Runnable, Actio
   }
 
   public boolean isGameOver() { return gameOver; }
+  public void setGameOver( boolean gameOver ) {
+    this.gameOver = gameOver;
+  }
 }

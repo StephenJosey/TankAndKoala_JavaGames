@@ -11,19 +11,19 @@ import java.awt.event.WindowEvent;
 public class Application {
   public static void main(String[] args) {
     final GameWorld game = GameWorld.getInstance();
-    /*JFrame frame = new JFrame("Test");
+    JFrame frame = new JFrame("Test");
     frame.addWindowListener( new WindowAdapter() {
                                public void windowGainedFocus(WindowEvent e) {
                                  game.requestFocusInWindow();
                                }
                              });
-    //frame.setSize(800, 600);
+    frame.setSize(800, 600);
     frame.getContentPane().add(game);
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    frame.setSize( game.getDimension() );
-    frame.setVisible(true);*/
     String file = "level.txt";
     game.init(file);
+    frame.setSize( game.getDimension() );
+    frame.setVisible(true);
     game.start();
   }
 }
