@@ -12,16 +12,14 @@ import java.util.Observer;
 /**
  * Created by Stephen on 4/15/2017.
  */
-public class Map implements Observer {
+public class Map  {
   int start;
   Integer position;
   String filename;
   BufferedReader level;
   int width, height;
-  int endgameDelay = 100;	// don't immediately end on game end
   GameObject map[][];
 
-  /*Constructor sets up arrays of enemies in a LinkedHashMap*/
   public Map(String filename){
     this.filename = filename;
     String line;
@@ -96,15 +94,4 @@ public class Map implements Observer {
   public int getHeight() { return height; }
   public GameObject[][] getMap() { return map; }
 
-  /*Level observes GameClock and updates on every tick*/
-  @Override
-  public void update(Observable o, Object arg) {
-    GameWorld world = GameWorld.getInstance();
-    if(world.isGameOver()){
-      if(endgameDelay<=0){
-        //world.removeClockObserver(this);
-        //world.finishGame();
-      } else endgameDelay--;
-    }
-  }
 }
