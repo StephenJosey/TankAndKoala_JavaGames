@@ -8,7 +8,7 @@ import java.awt.Image;
 public class Wall extends GameObject {
   private boolean destructible;
 
-  public Wall ( int x, int y, Image img, boolean destructible) {
+  public Wall( int x, int y, Image img, boolean destructible ) {
     super( x, y, img );
     this.destructible = destructible;
   }
@@ -17,11 +17,7 @@ public class Wall extends GameObject {
     return destructible;
   }
 
-  public void setShow(boolean show ) {
+  public void setShow( boolean show ) {
     this.show = show;
-  }
-
-  public boolean collision(GameObject object) {
-    return location.intersects(object.getLocation());
   }
 }

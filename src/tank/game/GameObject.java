@@ -1,12 +1,7 @@
-package tank.game;//package TankGame;
+package tank.game;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
-import java.io.File;
-import java.io.IOException;
-import java.util.Observer;
 
 public abstract class GameObject {
 
@@ -16,13 +11,13 @@ public abstract class GameObject {
   protected boolean show;
   int mapX, mapY;
 
-//  private BufferedImage image;\
   Image image;
   ImageObserver observer;
 
-  public GameObject () {
+  public GameObject() {
 
   }
+
   public GameObject( Image img ) {
     this( 0, 0, img );
   }
@@ -34,7 +29,7 @@ public abstract class GameObject {
     show = true;
     mapX = x;
     mapY = y;
-    this.location = new Rectangle((x * width), (y * height), width, height);
+    this.location = new Rectangle( ( x * width ), ( y * height ), width, height );
   }
 
   public int getX() {
@@ -45,45 +40,35 @@ public abstract class GameObject {
     return location.y;
   }
 
-  public int getMapX() { return mapX; }
-  public int getMapY() { return mapY; }
-
-  public boolean getShow() { return show; }
+  public boolean getShow() {
+    return show;
+  }
 
   public int getWidth() {
     return this.image.getWidth( observer );
-  }
-
-  public void setWidth(int width) {
-    this.width = width;
   }
 
   public int getHeight() {
     return this.image.getHeight( observer );
   }
 
-  public void setHeight(int height) {
-    this.height = height;
+  public Image getImage() {
+    return image;
   }
 
-  public Image getImage() { return image; }
-
-  public Rectangle getLocation() { return location; }
-
-  public void setLocation(int x, int y) {
-    location.x = x;
-    location.y = y;
+  public Rectangle getLocation() {
+    return location;
   }
 
   public void drawScaled( Graphics graphics, int scale ) {
-    if (show) {
-      graphics.drawImage(image, (location.x / scale), (location.y / scale), width / scale, height /scale, observer);
+    if( show ) {
+      graphics.drawImage( image, ( location.x / scale ), ( location.y / scale ), width / scale, height / scale, observer );
     }
   }
 
   public void repaint( Graphics graphics ) {
-    if (show) {
-      graphics.drawImage(image, (location.x), (location.y), width , height , observer);
+    if( show ) {
+      graphics.drawImage( image, ( location.x ), ( location.y ), width, height, observer );
     }
   }
 }
