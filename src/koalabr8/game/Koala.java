@@ -21,9 +21,12 @@ public class Koala extends GameObject implements Observer {
   int respawnDirection;
   int lives;
   int frame;
-  private GameController controller;
   String imageDir;
   Rectangle collide;
+  SpriteSheet explosion;
+  int explodeFrame;
+  boolean isExploding;
+  private GameController controller;
 
   public Koala( int x, int y, Image image, int[] keys ) {
     super( x, y, image );
@@ -35,7 +38,10 @@ public class Koala extends GameObject implements Observer {
     lives = 3;
     frame = 0;
     imageDir = "koala_stand";
-    collide = new Rectangle(location.x, location.y, width, height);
+    collide = new Rectangle( location.x, location.y, width, height );
+    explosion = GameWorld.getInstance().spriteSheets.get( "explosion" );
+    isExploding = false;
+    explodeFrame = 0;
   }
 
   public void update( Observable o, Object arg ) {
@@ -51,35 +57,41 @@ public class Koala extends GameObject implements Observer {
 
 
   public void update() {
-    if( up == 1  ) {
+    if( isExploding() == true ) {
+//      isExploding = true;
+////      GameSound.explosion.play();
+//      return;
+      GameWorld.getInstance().setGameOver( true );
+    }
+    if( up == 1 ) {
       location.y -= speed;
       collide.y += speed;
       imageDir = "koala_up";
       frame++;
       down = left = right = 0;
-    } else if( down == 1  ) {
+    } else if( down == 1 ) {
       location.y += speed;
       collide.y -= speed;
       imageDir = "koala_down";
       frame++;
       up = left = right = 0;
-    } else if( left == 1  ) {
+    } else if( left == 1 ) {
       location.x -= speed;
       collide.x -= speed;
       imageDir = "koala_left";
       frame++;
       down = up = right = 0;
-    } else if( right == 1  ) {
+    } else if( right == 1 ) {
       location.x += speed;
       collide.x += speed;
       imageDir = "koala_right";
       frame++;
       down = left = up = 0;
     }
-    if ( up == 0 && down == 0 && left == 0 && right == 0 ) {
+    if( up == 0 && down == 0 && left == 0 && right == 0 ) {
       imageDir = "koala_stand";
     }
-    if ( frame >= 8 ) {
+    if( frame >= 8 ) {
       frame = 0;
     }
 
@@ -94,21 +106,44 @@ public class Koala extends GameObject implements Observer {
     }
   }
 
+//  public void explode( Graphics graphics ) {
+//    graphics.drawImage( explosion.getSprites()[ explodeFrame ], location.x, location.y, observer );
+//    frame++;
+//    if( frame % 5 == 0 ) {
+//      explodeFrame++;
+//    }
+//    if( explodeFrame > 5 ) {
+//      isExploding = false;
+//      frame = 0;
+//      explodeFrame = 0;
+//      if( lives < 0 ) {
+//        GameWorld.getInstance().setGameOver( true );
+//      } else {
+////        respawn();
+//      }
+//    }
+//  }
 
   public boolean collide( GameObject object ) {
-    if ( up == 1 ) {
+    if( up == 1 ) {
       collide.y -= 1;
     }
-    if ( down == 1 ) {
+    if( down == 1 ) {
       collide.y += 1;
     }
-    if ( left == 1 ) {
+    if( left == 1 ) {
       collide.x -= 1;
     }
-    if ( right == 1 ) {
+    if( right == 1 ) {
       collide.x += 1;
     }
     if( object instanceof Wall || object instanceof Koala && ( this != object ) ) {
+      if( collide.intersects( object.getLocation() ) ) {
+        resetCollide();
+        return true;
+      }
+    }
+    if( object instanceof TNT || object instanceof Koala && ( this != object ) ) {
       if( collide.intersects( object.getLocation() ) ) {
         resetCollide();
         return true;
@@ -118,24 +153,35 @@ public class Koala extends GameObject implements Observer {
     return false;
   }
 
-  public int getSpeed() { return speed; }
+  public int getSpeed() {
+    return speed;
+  }
+
   public boolean isMoving() {
-    if ( up == 1 || down == 1 || left == 1 || right == 1 ) {
+    if( up == 1 || down == 1 || left == 1 || right == 1 ) {
       return true;
     }
     return false;
   }
 
+  public boolean isExploding() {
+    return isExploding;
+  }
+
   public void resetCollide() {
-    collide = new Rectangle (location.x, location.y, width, height);
+    collide = new Rectangle( location.x, location.y, width, height );
   }
 
   @Override
   public void repaint( Graphics graphics ) {
-    if ( imageDir.equals( "koala_stand" ) ) {
+    if( imageDir.equals( "koala_stand" ) ) {
       graphics.drawImage( GameWorld.getInstance().sprites.get( imageDir ), ( location.x ), ( location.y ), width, height, observer );
     } else {
-      graphics.drawImage(GameWorld.getInstance().spriteSheets.get(imageDir).getSprites()[frame], (location.x), (location.y), width, height, observer);
+      graphics.drawImage( GameWorld.getInstance().spriteSheets.get( imageDir ).getSprites()[ frame ], ( location.x ), ( location.y ), width, height, observer );
     }
+
+//    if( isExploding ) {
+//      explode( graphics );
+//    }
   }
 }

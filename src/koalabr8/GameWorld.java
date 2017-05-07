@@ -24,6 +24,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
   public HashMap< String, SpriteSheet > spriteSheets;
   private ArrayList< Wall > walls;
   private ArrayList< Koala > koalas;
+  private ArrayList< TNT > tnts;
   private ArrayList< GameObject > objects;
   private Background background;
   private Thread thread;
@@ -40,6 +41,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
     sprites = new HashMap<>();
     spriteSheets = new HashMap<>();
     koalas = new ArrayList<>();
+    tnts = new ArrayList<>();
     dimension = new Dimension( 800, 600 );
     timer = new Timer( 1000 / ( FPS ), this );
     objects = new ArrayList<>();
@@ -90,6 +92,9 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
     spriteSheets.put( "koala_up", getSpriteSheet( "Resources/Koala_up_strip8.png", 8, 40, 40 ) );
     spriteSheets.put( "koala_left", getSpriteSheet( "Resources/Koala_left_strip8.png", 8, 40, 40 ) );
     spriteSheets.put( "koala_right", getSpriteSheet( "Resources/Koala_right_strip8.png", 8, 40, 40 ) );
+    spriteSheets.put( "saw_horizontal", getSpriteSheet( "Resources/Saw_horizontal_strip2.png", 2, 40, 40 ) );
+    spriteSheets.put( "saw_vertical", getSpriteSheet( "Resources/Saw_vertical_strip2.png", 2, 40, 40 ) );
+    spriteSheets.put( "explosion", getSpriteSheet( "Resources/Explosion_small_strip6.png", 6, 32, 32 ) );
   }
 
   public SpriteSheet getSpriteSheet( String inPath, int size, int width, int height ) {
@@ -152,6 +157,9 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
       for( int i = 0; i < koalas.size(); i++ ) {
         koalas.get( i ).repaint( graphics );
       }
+      for( int i = 0; i < tnts.size(); i++ ) {
+        tnts.get( i ).repaint( graphics );
+      }
       for( int i = 0; i < objects.size(); i++ ) {
         objects.get( i ).repaint( graphics );
       }
@@ -197,6 +205,24 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
     }
   }
 
+  public void tntCollision( Koala koala, TNT tnt ) {
+    if( koala.collide( tnt ) ) {
+//      gameOver = true;
+      if( koala.getY() > tnt.getY() ) {
+        koala.up = 0;
+      }
+      if( koala.getY() < tnt.getY() ) {
+        koala.down = 0;
+      }
+      if( koala.getX() > tnt.getX() ) {
+        koala.left = 0;
+      }
+      if( koala.getX() < tnt.getX() ) {
+        koala.right = 0;
+      }
+    }
+  }
+
   public void update() {
     if( !isGameOver() ) {
       for( int i = 0; i < walls.size(); i++ ) {
@@ -209,6 +235,13 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
       for( int i = 0; i < koalas.size(); i++ ) {
         for( int j = 0; j < koalas.size(); j++ ) {
           koalaCollision( koalas.get( i ), koalas.get( j ) );
+        }
+      }
+      for( int i = 0; i < tnts.size(); i++ ) {
+        if( tnts.get( i ).getShow() ) {
+          for( int j = 0; j < koalas.size(); j++ ) {
+            tntCollision( koalas.get( j ), tnts.get( i ) );
+          }
         }
       }
       for( int i = 0; i < objects.size(); i++ ) {
@@ -243,6 +276,10 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
 
   public void addKoala( Koala koala ) {
     koalas.add( koala );
+  }
+
+  public void addTNT( TNT tnt ) {
+    tnts.add( tnt );
   }
 
   public void addObject( GameObject object ) {

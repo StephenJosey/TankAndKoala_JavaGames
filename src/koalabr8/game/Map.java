@@ -86,7 +86,17 @@ public class Map {
           } else if (mapCode == 'z' ) {
             Exit exit = new Exit(i, height, world.sprites.get( "red_exit") );
             world.addObject( exit );
+          } else if (mapCode == 't') {
+            TNT tnt = new TNT( i, height, world.sprites.get( "tnt" ) );
+            world.addTNT( tnt );
           }
+//          } else if (mapCode == 'h') {
+//            Saw saw = new Saw(i, height, world.getSpriteSheet( "saw_horizontal", 1, 40, 40 ) );
+//            world.addObject( saw );
+//          } else if (mapCode == 'v') {
+//            Saw saw = new Saw(i, height, world.getSpriteSheet( "saw_vertical", 1, 40, 40 ) );
+//            world.addObject( saw );
+//          }
         }
         height++;
         line = level.readLine();
