@@ -35,7 +35,7 @@ public class Koala extends GameObject implements Observer {
     speed = SPEED;
     frame = 0;
     imageDir = "koala_stand";
-    collide = new Rectangle( location.x, location.y, width, height );
+    collide = new Rectangle( location.x + 4, location.y + 4, width - 4, height-4);
     explosion = GameWorld.getInstance().spriteSheets.get( "explosion" );
     isExploding = false;
     explodeFrame = 0;
@@ -170,7 +170,7 @@ public class Koala extends GameObject implements Observer {
   }
 
   public void resetCollide() {
-    collide = new Rectangle( location.x, location.y, location.width, location.height );
+    collide = new Rectangle( location.x + 8, location.y + 8, location.width - 10, location.height - 10);
   }
 
   @Override

@@ -300,6 +300,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
         for( int j = 0; j < koalas.size(); j++ ) {
           if( objects.get( i ) instanceof Exit && objects.get( i ).collision( koalas.get( j ) ) ) {
             koalas.remove( j );
+            GameSound.saved.play();
             rescued++;
           }
         }
@@ -360,7 +361,6 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
   public boolean isGameOver() {
     if( rescued >= 3 ) {
       gameOver = true;
-      GameSound.saved.play();
     }
     return gameOver;
   }

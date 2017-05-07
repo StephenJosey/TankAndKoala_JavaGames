@@ -90,7 +90,7 @@ public class Player extends Tank implements Observer {
   void respawn() {
     lives--;
     if( lives > 0 && !isExploding() ) {
-      location = respawn;
+      location = new Rectangle(respawn.x, respawn.y, width, height);
       up = down = left = right = 0;
       speed = SPEED;
       reload = RELOAD_TIME;
