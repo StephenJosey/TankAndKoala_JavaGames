@@ -19,16 +19,21 @@ import java.util.Observer;
 public final class GameWorld extends JPanel implements Observer, Runnable, ActionListener {
   private static final GameWorld game = new GameWorld();
   private static final int FPS = 60;
+  private static final int DEAD_COUNTER = 100;
+  int deadCounter;
   public Map map;
+  String level;
   public HashMap< String, Image > sprites;
   public HashMap< String, SpriteSheet > spriteSheets;
   private ArrayList< Wall > walls;
   private ArrayList< Koala > koalas;
   private ArrayList< TNT > tnts;
+  private ArrayList< Saw > saws;
   private ArrayList< GameObject > objects;
   private Background background;
   private Thread thread;
-  private boolean gameOver = false;
+  private boolean gameOver;
+  private boolean lost;
   private Dimension dimension;
   private javax.swing.Timer timer;
   private int mapWidth, mapHeight;
@@ -45,6 +50,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
     dimension = new Dimension( 800, 600 );
     timer = new Timer( 1000 / ( FPS ), this );
     objects = new ArrayList<>();
+    saws = new ArrayList<>();
   }
 
   public static GameWorld getInstance() {
@@ -67,7 +73,12 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
     mapHeight = map.getHeight();
     rescued = 0;
     background = new Background( mapWidth * 32, mapHeight * 32, sprites.get( "background" ) );
-    setDimension( mapWidth * 42, mapHeight * 52 );
+    setDimension( mapWidth * 41, mapHeight * 48 );
+    level = file;
+    gameOver = false;
+    lost = false;
+    deadCounter = 0;
+    GameSound.music.play();
     this.setSize( game.getDimension() );
     this.setVisible( true );
     timer.start();
@@ -144,7 +155,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
 
   @Override
   public void paintComponent( Graphics graphics ) {
-    if( !isGameOver() ) {
+    if( !isGameOver() || lost ) {
       background.repaint( graphics );
       graphics.drawImage( sprites.get( "rescued" ), 0, 0, null );
       graphics.setFont( new Font( "TimesRoman", Font.BOLD, 50 ) );
@@ -160,10 +171,19 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
       for( int i = 0; i < tnts.size(); i++ ) {
         tnts.get( i ).repaint( graphics );
       }
+      for( int i = 0; i < saws.size(); i++ ) {
+        saws.get( i ).repaint( graphics );
+      }
       for( int i = 0; i < objects.size(); i++ ) {
         objects.get( i ).repaint( graphics );
       }
-    } else {
+      if ( lost ) {
+        deadCounter++;
+        if ( deadCounter > DEAD_COUNTER ) {
+          restart();
+        }
+      }
+    } else if ( gameOver && !lost ){
       background.repaint( graphics );
       graphics.drawImage( sprites.get( "congratulation" ), 0, 0, null );
     }
@@ -207,18 +227,34 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
 
   public void tntCollision( Koala koala, TNT tnt ) {
     if( koala.collide( tnt ) ) {
-//      gameOver = true;
-      if( koala.getY() > tnt.getY() ) {
-        koala.up = 0;
-      }
-      if( koala.getY() < tnt.getY() ) {
-        koala.down = 0;
-      }
-      if( koala.getX() > tnt.getX() ) {
-        koala.left = 0;
-      }
-      if( koala.getX() < tnt.getX() ) {
-        koala.right = 0;
+      koala.setDead( true );
+      lost = true;
+      gameOver = true;
+    }
+  }
+
+  public void sawCollision( Koala koala, Saw saw ) {
+    if( koala.collide( saw ) ) {
+      koala.setDead( true );
+      lost = true;
+      gameOver = true;
+    }
+  }
+
+  public void sawCollision( Wall wall, Saw saw ) {
+    if ( saw.collide ( wall ) ) {
+      if ( saw.getLeft() == 1) {
+        saw.setRight( 1 );
+        saw.setLeft( 0 );
+      } else if ( saw.getRight() == 1 ) {
+        saw.setLeft( 1 );
+        saw.setRight( 0 );
+      } else if ( saw.getUp() == 1 ) {
+        saw.setDown( 1 );
+        saw.setUp( 0 );
+      } else if ( saw.getDown() == 1 ) {
+        saw.setUp( 1 );
+        saw.setDown( 0 );
       }
     }
   }
@@ -229,6 +265,13 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
         if( walls.get( i ).getShow() ) {
           for( int j = 0; j < koalas.size(); j++ ) {
             wallCollision( koalas.get( j ), walls.get( i ) );
+          }
+        }
+      }
+      for( int i = 0; i < walls.size(); i++ ) {
+        if( walls.get( i ).getShow() ) {
+          for( int j = 0; j < saws.size(); j++ ) {
+            sawCollision( walls.get( i ), saws.get( j ) );
           }
         }
       }
@@ -244,6 +287,13 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
           }
         }
       }
+      for( int i = 0; i < saws.size(); i++ ) {
+        if( saws.get( i ).getShow() ) {
+          for( int j = 0; j < koalas.size(); j++ ) {
+            sawCollision( koalas.get( j ), saws.get( i ) );
+          }
+        }
+      }
       for( int i = 0; i < objects.size(); i++ ) {
         for( int j = 0; j < koalas.size(); j++ ) {
           if( objects.get( i ) instanceof Exit && objects.get( i ).collision( koalas.get( j ) ) ) {
@@ -255,15 +305,27 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
       for( int i = 0; i < koalas.size(); i++ ) {
         koalas.get( i ).update();
       }
+      for( int i = 0; i < saws.size(); i++ ) {
+        saws.get( i ).update();
+      }
     }
   }
 
   @Override
   public void actionPerformed( ActionEvent e ) {
-    if( !isGameOver() ) {
+    if( !isGameOver() || lost ) {
       update();
       repaint();
     }
+  }
+
+  public void restart() {
+    koalas.clear();
+    objects.clear();
+    walls.clear();
+    tnts.clear();
+    saws.clear();
+    init( level );
   }
 
   public Map getMap() {
@@ -282,6 +344,9 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
     tnts.add( tnt );
   }
 
+  public void addSaw( Saw saw ) {
+    saws.add( saw );
+  }
   public void addObject( GameObject object ) {
     objects.add( object );
   }

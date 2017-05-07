@@ -47,20 +47,6 @@ public class GameController extends Observable implements KeyListener {
     notifyObservers();
   }
 
-  private void unsetTurn() {
-    turn = 0;
-    notifyObservers();
-  }
-
-  private void unsetFire() {
-    fire = false;
-    notifyObservers();
-  }
-
-  public boolean getFire() {
-    return fire;
-  }
-
   public void clearChanged() {
     super.clearChanged();
   }

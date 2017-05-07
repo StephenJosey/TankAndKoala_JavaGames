@@ -89,14 +89,13 @@ public class Map {
           } else if (mapCode == 't') {
             TNT tnt = new TNT( i, height, world.sprites.get( "tnt" ) );
             world.addTNT( tnt );
+          } else if (mapCode == 'h') {
+            Saw saw = new Saw(i, height, world.spriteSheets.get( "saw_horizontal").getSprites()[0], true  );
+            world.addSaw( saw );
+          } else if (mapCode == 'v') {
+            Saw saw = new Saw(i, height, world.spriteSheets.get( "saw_vertical").getSprites()[0], false  );
+            world.addSaw( saw );
           }
-//          } else if (mapCode == 'h') {
-//            Saw saw = new Saw(i, height, world.getSpriteSheet( "saw_horizontal", 1, 40, 40 ) );
-//            world.addObject( saw );
-//          } else if (mapCode == 'v') {
-//            Saw saw = new Saw(i, height, world.getSpriteSheet( "saw_vertical", 1, 40, 40 ) );
-//            world.addObject( saw );
-//          }
         }
         height++;
         line = level.readLine();
