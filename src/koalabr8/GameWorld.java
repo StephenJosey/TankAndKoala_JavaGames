@@ -228,6 +228,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
   public void tntCollision( Koala koala, TNT tnt ) {
     if( koala.collide( tnt ) ) {
       koala.setDead( true );
+      GameSound.tnt.play();
       lost = true;
       gameOver = true;
     }
@@ -236,6 +237,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
   public void sawCollision( Koala koala, Saw saw ) {
     if( koala.collide( saw ) ) {
       koala.setDead( true );
+      GameSound.saw.play();
       lost = true;
       gameOver = true;
     }
@@ -358,6 +360,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
   public boolean isGameOver() {
     if( rescued >= 3 ) {
       gameOver = true;
+      GameSound.saved.play();
     }
     return gameOver;
   }

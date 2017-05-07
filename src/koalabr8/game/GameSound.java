@@ -8,7 +8,10 @@ import java.applet.AudioClip;
 
 public class GameSound {
   public static GameSound music = new GameSound( "Resources/music.mid" );
-  public static GameSound firing = new GameSound( "Resources/TankFiring.wav" );
+  public static GameSound tnt = new GameSound( "Resources/Explosion.wav" );
+  public static GameSound saved = new GameSound( "Resources/Saved.wav" );
+  public static GameSound saw = new GameSound( "Resources/Saw.wav" );
+
   private AudioClip clip;
 
   public GameSound( String name ) {
