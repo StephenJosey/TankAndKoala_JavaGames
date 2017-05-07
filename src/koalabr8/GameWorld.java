@@ -24,10 +24,10 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
   public HashMap< String, SpriteSheet > spriteSheets;
   private ArrayList< Wall > walls;
   private ArrayList< Koala > koalas;
-  private ArrayList<GameObject> objects;
+  private ArrayList< GameObject > objects;
   private Background background;
   private Thread thread;
-  private boolean gameOver;
+  private boolean gameOver = false;
   private Dimension dimension;
   private javax.swing.Timer timer;
   private int mapWidth, mapHeight;
@@ -39,7 +39,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
     walls = new ArrayList<>();
     sprites = new HashMap<>();
     spriteSheets = new HashMap<>();
-    koalas = new ArrayList<  >();
+    koalas = new ArrayList<>();
     dimension = new Dimension( 800, 600 );
     timer = new Timer( 1000 / ( FPS ), this );
     objects = new ArrayList<>();
@@ -65,7 +65,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
     mapHeight = map.getHeight();
     rescued = 0;
     background = new Background( mapWidth * 32, mapHeight * 32, sprites.get( "background" ) );
-    setDimension( mapWidth * 42, mapHeight * 52);
+    setDimension( mapWidth * 42, mapHeight * 52 );
     this.setSize( game.getDimension() );
     this.setVisible( true );
     timer.start();
@@ -74,15 +74,17 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
   public void loadSprites() {
 
     sprites.put( "background", getSprite( "Resources/Background.png" ) );
-    sprites.put( "help", getSprite ( "Resources/Button_help.png" ) );
-    sprites.put( "load", getSprite ( "Resources/Button_load.png" ) );
-    sprites.put( "start", getSprite ( "Resources/Button_start.png" ) );
-    sprites.put( "quit", getSprite ( "Resources/Button_quit.png" ) );
-    sprites.put( "koala_dead", getSprite ( "Resources/Koala_dead.png" ) );
+    sprites.put( "help", getSprite( "Resources/Button_help.png" ) );
+    sprites.put( "load", getSprite( "Resources/Button_load.png" ) );
+    sprites.put( "start", getSprite( "Resources/Button_start.png" ) );
+    sprites.put( "quit", getSprite( "Resources/Button_quit.png" ) );
+    sprites.put( "koala_dead", getSprite( "Resources/Koala_dead.png" ) );
     sprites.put( "koala_stand", getSprite( "Resources/Koala_stand.png" ) );
-    sprites.put( "wall_tiles", getSprite ( "Resources/wall_tiles.png" ) );
-    sprites.put( "rescued", getSprite ( "Resources/Rescued.png" ) );
-    sprites.put( "red_exit", getSprite ( "Resources/Exit1.png" ) );
+    sprites.put( "wall_tiles", getSprite( "Resources/wall_tiles.png" ) );
+    sprites.put( "rescued", getSprite( "Resources/Rescued.png" ) );
+    sprites.put( "red_exit", getSprite( "Resources/Exit1.png" ) );
+    sprites.put( "tnt", getSprite( "Resources/TNT.png" ) );
+    sprites.put( "congratulation", getSprite( "Resources/Congratulation.png" ) );
 
     spriteSheets.put( "koala_down", getSpriteSheet( "Resources/Koala_down_strip8.png", 8, 40, 40 ) );
     spriteSheets.put( "koala_up", getSpriteSheet( "Resources/Koala_up_strip8.png", 8, 40, 40 ) );
@@ -139,11 +141,11 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
   public void paintComponent( Graphics graphics ) {
     if( !isGameOver() ) {
       background.repaint( graphics );
-      graphics.drawImage( sprites.get( "rescued" ), 0, 0, null);
+      graphics.drawImage( sprites.get( "rescued" ), 0, 0, null );
       graphics.setFont( new Font( "TimesRoman", Font.BOLD, 50 ) );
-      graphics.setColor( Color.BLACK );
-      graphics.drawString( "HELLO", 0, 0 );
-      graphics.translate(0, sprites.get("rescued").getHeight(null) );
+      graphics.setColor( Color.WHITE );
+      graphics.drawString( String.valueOf( rescued ), 150, 40 );
+      graphics.translate( 0, sprites.get( "rescued" ).getHeight( null ) );
       for( int i = 0; i < walls.size(); i++ ) {
         walls.get( i ).repaint( graphics );
       }
@@ -153,11 +155,14 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
       for( int i = 0; i < objects.size(); i++ ) {
         objects.get( i ).repaint( graphics );
       }
+    } else {
+      background.repaint( graphics );
+      graphics.drawImage( sprites.get( "congratulation" ), 0, 0, null );
     }
   }
 
   public void wallCollision( Koala koala, Wall wall ) {
-    if ( koala.collide( wall ) ) {
+    if( koala.collide( wall ) ) {
       if( koala.getY() > wall.getY() ) {
         koala.up = 0;
       }
@@ -175,17 +180,17 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
 
   public void koalaCollision( Koala koala1, Koala koala2 ) {
     if( koala1.isMoving() ) {
-      if(koala1.collide( koala2 ) ) {
-        if( koala1.getY() > koala2.getY()) {
+      if( koala1.collide( koala2 ) ) {
+        if( koala1.getY() > koala2.getY() ) {
           koala1.up = 0;
         }
-        if( koala1.getY() < koala2.getY()) {
+        if( koala1.getY() < koala2.getY() ) {
           koala1.down = 0;
         }
-        if( koala1.getX() > koala2.getX()) {
+        if( koala1.getX() > koala2.getX() ) {
           koala1.left = 0;
         }
-        if( koala1.getX() < koala2.getX()) {
+        if( koala1.getX() < koala2.getX() ) {
           koala1.right = 0;
         }
       }
@@ -208,7 +213,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
       }
       for( int i = 0; i < objects.size(); i++ ) {
         for( int j = 0; j < koalas.size(); j++ ) {
-          if ( objects.get( i ) instanceof Exit && objects.get( i ).collision(koalas.get( j ) )) {
+          if( objects.get( i ) instanceof Exit && objects.get( i ).collision( koalas.get( j ) ) ) {
             koalas.remove( j );
             rescued++;
           }
@@ -235,16 +240,23 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
   public void addWall( Wall wall ) {
     walls.add( wall );
   }
+
   public void addKoala( Koala koala ) {
     koalas.add( koala );
   }
-  public void addObject( GameObject object) { objects.add( object ); }
+
+  public void addObject( GameObject object ) {
+    objects.add( object );
+  }
 
   @Override
   public void update( Observable o, Object arg ) {
   }
 
   public boolean isGameOver() {
+    if( rescued >= 3 ) {
+      gameOver = true;
+    }
     return gameOver;
   }
 
