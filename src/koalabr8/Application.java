@@ -1,4 +1,4 @@
-package tank;
+package koalabr8;
 
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
@@ -10,14 +10,13 @@ import java.awt.event.WindowEvent;
 
 public class Application {
   public static void main( String[] args ) {
-    final tank.GameWorld game = tank.GameWorld.getInstance();
+    final koalabr8.GameWorld game = koalabr8.GameWorld.getInstance();
     JFrame frame = new JFrame( "Test" );
     frame.addWindowListener( new WindowAdapter() {
       public void windowGainedFocus( WindowEvent e ) {
         game.requestFocusInWindow();
       }
     } );
-    frame.setSize( 800, 600 );
     frame.getContentPane().add( game );
     frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
     String file = "level.txt";

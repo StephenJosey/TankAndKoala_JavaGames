@@ -1,4 +1,4 @@
-package tank;
+package koalabr8;
 
 import java.awt.image.BufferedImage;
 

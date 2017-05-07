@@ -1,7 +1,4 @@
-package tank; /**
- * Created by jinghuihuang on 4/15/17.
- */
-
+package tank;
 import java.awt.event.ActionEvent;
 
 import tank.game.*;
