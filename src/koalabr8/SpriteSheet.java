@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 public class SpriteSheet {
   BufferedImage[] sprites;
   String name;
+
   public SpriteSheet( int rows, String name ) {
     sprites = new BufferedImage[ rows ];
     this.name = name;
