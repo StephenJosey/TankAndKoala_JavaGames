@@ -20,11 +20,11 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
   private static final GameWorld game = new GameWorld();
   private static final int FPS = 60;
   private static final int DEAD_COUNTER = 100;
-  int deadCounter;
   public Map map;
-  String level;
   public HashMap< String, Image > sprites;
   public HashMap< String, SpriteSheet > spriteSheets;
+  int deadCounter;
+  String level;
   private ArrayList< Wall > walls;
   private ArrayList< Koala > koalas;
   private ArrayList< TNT > tnts;
@@ -105,7 +105,6 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
     spriteSheets.put( "koala_right", getSpriteSheet( "Resources/Koala_right_strip8.png", 8, 40, 40 ) );
     spriteSheets.put( "saw_horizontal", getSpriteSheet( "Resources/Saw_horizontal_strip2.png", 2, 40, 40 ) );
     spriteSheets.put( "saw_vertical", getSpriteSheet( "Resources/Saw_vertical_strip2.png", 2, 40, 40 ) );
-    spriteSheets.put( "explosion", getSpriteSheet( "Resources/Explosion_small_strip6.png", 6, 32, 32 ) );
   }
 
   public SpriteSheet getSpriteSheet( String inPath, int size, int width, int height ) {
@@ -177,13 +176,13 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
       for( int i = 0; i < objects.size(); i++ ) {
         objects.get( i ).repaint( graphics );
       }
-      if ( lost ) {
+      if( lost ) {
         deadCounter++;
-        if ( deadCounter > DEAD_COUNTER ) {
+        if( deadCounter > DEAD_COUNTER ) {
           restart();
         }
       }
-    } else if ( gameOver && !lost ){
+    } else if( gameOver && !lost ) {
       background.repaint( graphics );
       graphics.drawImage( sprites.get( "congratulation" ), 0, 0, null );
     }
@@ -244,17 +243,17 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
   }
 
   public void sawCollision( Wall wall, Saw saw ) {
-    if ( saw.collide ( wall ) ) {
-      if ( saw.getLeft() == 1) {
+    if( saw.collide( wall ) ) {
+      if( saw.getLeft() == 1 ) {
         saw.setRight( 1 );
         saw.setLeft( 0 );
-      } else if ( saw.getRight() == 1 ) {
+      } else if( saw.getRight() == 1 ) {
         saw.setLeft( 1 );
         saw.setRight( 0 );
-      } else if ( saw.getUp() == 1 ) {
+      } else if( saw.getUp() == 1 ) {
         saw.setDown( 1 );
         saw.setUp( 0 );
-      } else if ( saw.getDown() == 1 ) {
+      } else if( saw.getDown() == 1 ) {
         saw.setUp( 1 );
         saw.setDown( 0 );
       }
@@ -331,10 +330,6 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
     init( level );
   }
 
-  public Map getMap() {
-    return map;
-  }
-
   public void addWall( Wall wall ) {
     walls.add( wall );
   }
@@ -350,6 +345,7 @@ public final class GameWorld extends JPanel implements Observer, Runnable, Actio
   public void addSaw( Saw saw ) {
     saws.add( saw );
   }
+
   public void addObject( GameObject object ) {
     objects.add( object );
   }

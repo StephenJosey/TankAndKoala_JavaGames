@@ -1,6 +1,7 @@
 package koalabr8.game;
 
 import koalabr8.GameWorld;
+
 import java.awt.*;
 
 public class Background extends GameObject {
@@ -17,6 +18,5 @@ public class Background extends GameObject {
         graphic.drawImage( getImage(), x, y, observer );
       }
     }
-
   }
 }

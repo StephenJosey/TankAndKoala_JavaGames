@@ -15,10 +15,8 @@ public class GameController extends Observable implements KeyListener {
   int moveState;
   int[] keys;
   String direction;
-  int turn;
-  boolean fire;
 
-  public GameController(Koala koala, int[] keys ) {
+  public GameController( Koala koala, int[] keys ) {
     this.addObserver( koala );
     this.action = null;
     this.field = null;
@@ -54,20 +52,13 @@ public class GameController extends Observable implements KeyListener {
 
   public void keyPressed( KeyEvent e ) {
     int code = e.getKeyCode();
-    // left
     if( code == keys[ 0 ] ) {
       this.setMove( "left" );
-    }
-    // up
-    else if( code == keys[ 1 ] ) {
+    } else if( code == keys[ 1 ] ) {
       this.setMove( "up" );
-    }
-    // right
-    else if( code == keys[ 2 ] ) {
+    } else if( code == keys[ 2 ] ) {
       this.setMove( "right" );
-    }
-    // down
-    else if( code == keys[ 3 ] ) {
+    } else if( code == keys[ 3 ] ) {
       this.setMove( "down" );
     }
     setChanged();

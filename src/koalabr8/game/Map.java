@@ -13,27 +13,14 @@ import java.io.InputStreamReader;
  * Created by Stephen on 4/15/2017.
  */
 public class Map {
+  final int WALL_WIDTH = 40;
+  final int WALL_HEIGHT = 40;
   String filename;
   BufferedReader level;
   int width, height;
   GameObject map[][];
-  final int WALL_WIDTH = 40;
-  final int WALL_HEIGHT = 40;
-  BufferedImage wallImage = toBufferedImage( GameWorld.getInstance().sprites.get("wall_tiles" ) );
+  BufferedImage wallImage = toBufferedImage( GameWorld.getInstance().sprites.get( "wall_tiles" ) );
 
-  public static BufferedImage toBufferedImage(Image img)
-  {
-    if (img instanceof BufferedImage)
-    {
-      return (BufferedImage) img;
-    }
-    BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-
-    Graphics2D bGr = bimage.createGraphics();
-    bGr.drawImage(img, 0, 0, null);
-    bGr.dispose();
-    return bimage;
-  }
   public Map( String filename ) {
     this.filename = filename;
     String line;
@@ -54,6 +41,18 @@ public class Map {
     }
   }
 
+  public static BufferedImage toBufferedImage( Image img ) {
+    if( img instanceof BufferedImage ) {
+      return ( BufferedImage ) img;
+    }
+    BufferedImage bimage = new BufferedImage( img.getWidth( null ), img.getHeight( null ), BufferedImage.TYPE_INT_ARGB );
+
+    Graphics2D bGr = bimage.createGraphics();
+    bGr.drawImage( img, 0, 0, null );
+    bGr.dispose();
+    return bimage;
+  }
+
   public void load() {
     GameWorld world = GameWorld.getInstance();
     try {
@@ -71,29 +70,29 @@ public class Map {
       while( line != null ) {
         for( int i = 0, n = line.length(); i < n; i++ ) {
           char mapCode = line.charAt( i );
-          int hex = Character.getNumericValue(mapCode);
+          int hex = Character.getNumericValue( mapCode );
           // Map codes 0-15 are wall tiles
           // Grabbing the subimage due to it being a tilesheet instead of a spritesheet
           // k = Koala
           // z = red exit
           if( hex >= 0 && hex < 16 ) {
-            Wall wall = new Wall( i, height, wallImage.getSubimage( (hex % 4) * WALL_WIDTH, (hex / 4) * WALL_HEIGHT, WALL_WIDTH, WALL_HEIGHT ) );
+            Wall wall = new Wall( i, height, wallImage.getSubimage( ( hex % 4 ) * WALL_WIDTH, ( hex / 4 ) * WALL_HEIGHT, WALL_WIDTH, WALL_HEIGHT ) );
             world.addWall( wall );
-          } else if (mapCode == 'k' ) {
-            int[] controls = { KeyEvent.VK_A, KeyEvent.VK_W, KeyEvent.VK_D, KeyEvent.VK_S};
+          } else if( mapCode == 'k' ) {
+            int[] controls = { KeyEvent.VK_A, KeyEvent.VK_W, KeyEvent.VK_D, KeyEvent.VK_S };
             Koala koala = new Koala( i, height, world.sprites.get( "koala_stand" ), controls );
             world.addKoala( koala );
-          } else if (mapCode == 'z' ) {
-            Exit exit = new Exit(i, height, world.sprites.get( "red_exit") );
+          } else if( mapCode == 'z' ) {
+            Exit exit = new Exit( i, height, world.sprites.get( "red_exit" ) );
             world.addObject( exit );
-          } else if (mapCode == 't') {
+          } else if( mapCode == 't' ) {
             TNT tnt = new TNT( i, height, world.sprites.get( "tnt" ) );
             world.addTNT( tnt );
-          } else if (mapCode == 'h') {
-            Saw saw = new Saw(i, height, world.spriteSheets.get( "saw_horizontal").getSprites()[0], true  );
+          } else if( mapCode == 'h' ) {
+            Saw saw = new Saw( i, height, world.spriteSheets.get( "saw_horizontal" ).getSprites()[ 0 ], true );
             world.addSaw( saw );
-          } else if (mapCode == 'v') {
-            Saw saw = new Saw(i, height, world.spriteSheets.get( "saw_vertical").getSprites()[0], false  );
+          } else if( mapCode == 'v' ) {
+            Saw saw = new Saw( i, height, world.spriteSheets.get( "saw_vertical" ).getSprites()[ 0 ], false );
             world.addSaw( saw );
           }
         }

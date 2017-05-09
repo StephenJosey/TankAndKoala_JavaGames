@@ -5,9 +5,9 @@ import java.awt.image.ImageObserver;
 
 public abstract class GameObject {
 
+  public Rectangle location;
   protected int height;
   protected int width;
-  public Rectangle location;
   protected boolean show;
   int mapX, mapY;
 
@@ -60,14 +60,8 @@ public abstract class GameObject {
     return location;
   }
 
-  public void drawScaled( Graphics graphics, int scale ) {
-    if( show ) {
-      graphics.drawImage( image, ( location.x / scale ), ( location.y / scale ), width / scale, height / scale, observer );
-    }
-  }
-
-  public boolean collision(GameObject object) {
-    if( this.location.intersects(object.location) ) {
+  public boolean collision( GameObject object ) {
+    if( this.location.intersects( object.location ) ) {
       return true;
     }
     return false;
