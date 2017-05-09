@@ -11,7 +11,7 @@ import java.awt.event.WindowEvent;
 public class Application {
   public static void main( String[] args ) {
     final tank.GameWorld game = tank.GameWorld.getInstance();
-    JFrame frame = new JFrame( "Test" );
+    JFrame frame = new JFrame( "Tank Wars" );
     frame.addWindowListener( new WindowAdapter() {
       public void windowGainedFocus( WindowEvent e ) {
         game.requestFocusInWindow();
